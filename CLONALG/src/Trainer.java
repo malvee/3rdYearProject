@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Trainer 
 {
-	final int Ngen=200;
+	final int Ngen=400;
 	final int N=20;
 	final int M=3;
 	final int d=3;//must be >=1
@@ -82,13 +82,17 @@ public class Trainer
 			for(int j=0;j<50;j++)	//assuming each class has equal number of examples
 			{
 				String str = scanner.nextLine();
+				String[] temp = str.split(",");
+				
+				//depends on data
 				double X[]= new double[4]; // X has vals in cm
 				for(int k=0;k<4;k++)
-					X[k]=new Double(str.substring(k*4, (k+1)*4-1));
+					X[k]=new Double(temp[k]);
 				int D[] = new int[4];	// D has vals in mm
 				for(int k=0;k<4;k++)
 					D[k] = (int)(10*X[k]);	//change cm to mm so int
 				Ag[i*50+j]=new Antigen(i,D, 4);	// 3 classes, first 50 Antigen(0, array)
+				//depends on data
 			}
 		scanner.close();
 		Trainer T = new Trainer(Ag);
