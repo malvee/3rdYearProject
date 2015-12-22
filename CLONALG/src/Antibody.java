@@ -2,7 +2,7 @@ import java.util.Random;
 public class Antibody implements Cloneable
 {
 	
-	final double D[] = new double[4];
+	final double D[];
 	final int size;
 	final int range;
 	public double random(double M, double S)
@@ -13,6 +13,7 @@ public class Antibody implements Cloneable
 	
 	public Antibody(int size, int range)
 	{
+		this.D = new double[size];
 		this.size = size;
 		this.range = range;
 		for(int i=0;i<size;i++)

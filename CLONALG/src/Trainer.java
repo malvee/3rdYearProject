@@ -5,20 +5,27 @@ import java.util.Scanner;
 
 public class Trainer 
 {
-	final int Ngen=400;
-	final int N=20;
-	final int M=3;
-	final int d=3;//must be >=1
-	final int n=10;
-	final double p=0.01;
+	final int Ngen;
+	final int N;
+	final int M;
+	final int d;//must be >=1
+	final int n;
+	final double p;
 	Antibody Ab[];
 	Antigen Ag[];
-	public Trainer(Antigen[] Ag)
+	public Trainer(Antigen[] Ag, int Ngen, int N, int M, int d, int n, double p)
 	{
+		this.Ngen = Ngen;
+		this.N = N;
+		this.M = M;
+		this.d = d;
+		this.n = n;
+		this.p = p;
 		this.Ag=Ag;
 		Ab = new Antibody[N];
 		for(int i=0;i<N;i++)
-			Ab[i]=new Antibody(4, 10);
+			//edit
+			Ab[i]=new Antibody(13, 100);
 	}
 	private void permuteAg()
 	{
@@ -55,11 +62,13 @@ public class Trainer
 					//R.mutatedAb.length might be bigger than Ab.length
 					int looper = ((R.mutatedAb.length - Ab.length) > 0 ? Ab.length : R.mutatedAb.length ) ;
 					//only fill from index 3 till possibly end
+					//
 					for(int j = 3; j < looper; j++){
 						Ab[j] = R.mutatedAb[j-3];
 					}
 					for(int j=0;j<d;j++)
-						Ab[indx[j]]= new Antibody(4, 10);
+						//edit
+						Ab[indx[j]]= new Antibody(Ab[0].size, Ab[0].range);
 				}
 				
 			}
@@ -72,9 +81,7 @@ public class Trainer
 		
 		return rst;
 	}
-
-	public static void main(String ...args) throws IOException
-	{
+	public static void iris() throws IOException{
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[150];
@@ -95,7 +102,7 @@ public class Trainer
 				//depends on data
 			}
 		scanner.close();
-		Trainer T = new Trainer(Ag);
+		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
@@ -118,6 +125,52 @@ public class Trainer
 		}
 		for(int i=0;i<3;i++)
 			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+	}
+	public static void wine() throws IOException{
+		String fileName = "wine.data.txt";
+		Scanner scanner =  new Scanner(Paths.get(fileName));
+		Antigen[] Ag = new Antigen[178];
+		for(int i = 0; i < Ag.length; i++){
+			String str = scanner.nextLine();
+			String[] temp = str.split(",");
+			double X[]= new double[13];
+			for(int k=1;k<temp.length;k++)
+				X[k-1]=new Double(temp[k]);
+			int D[] = new int[13];	// D has vals in mm
+			for(int k=0;k<X.length;k++)
+				D[k] = (int)(100*X[k]);	//change cm to mm so int
+			Ag[i] = new Antigen(new Integer(temp[0])-1, D, 13);
+		}
+		scanner.close();
+		Trainer T = new Trainer(Ag,400,25,3,3,8,0.01);
 		
+		Antibody[] Ab = T.train();	//all the work
+		
+		int S[][] = new int[3][3];
+		for(int i=0;i<Ag.length;i++)
+		{
+			int o = Ag[i].getLabel();
+			
+			int indx=-1;
+			double max=-1;
+			for(int j=0;j<3;j++)
+			{
+				double fit = Ag[i].affinity(Ab[j]);
+				if(fit>max)
+				{
+					max=fit;
+					indx=j;
+				}
+			}
+			S[o][indx]++;
+		}
+		for(int i=0;i<3;i++)
+			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+	}
+	public static void main(String ...args) throws IOException
+	{
+		//one cheeky detail is that antigen class label starts at 0
+		iris();
+		wine();
 	}
 }
