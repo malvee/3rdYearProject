@@ -3,22 +3,25 @@ public class Antibody implements Cloneable
 {
 	
 	final double D[] = new double[4];
-	
+	final int size;
+	final int range;
 	public double random(double M, double S)
 	{
 		Random r = new Random();
 		return r.nextGaussian()*S+M;
 	}
 	
-	public Antibody()
+	public Antibody(int size, int range)
 	{
-		for(int i=0;i<4;i++)
-			D[i]=Math.random()*10;
+		this.size = size;
+		this.range = range;
+		for(int i=0;i<size;i++)
+			D[i]=Math.random()*range;
 	}
 	
 	public void mutate(double p)
 	{
-		for(int i=0;i<4;i++)
+		for(int i=0;i<size;i++)
 		{
 			double x = random(D[i],(p*D[i]+0.1)/2.0);
 			if(x<=0.0)
@@ -29,14 +32,18 @@ public class Antibody implements Cloneable
 	
 	public Antibody clone()
 	{
-		Antibody rst = new Antibody();
-		for(int i=0;i<4;i++)
+		Antibody rst = new Antibody(size, range);
+		for(int i=0;i<size;i++)
 			rst.D[i]=D[i];
 		
 		return rst;
 	}
 	public String toString()
 	{
-		return "( "+D[0]+" , "+D[1]+" , "+D[2]+" , "+D[3]+" )";
+		String temp = "";
+		for(int i = 0; i < size; i++){
+			temp += D[i] + " ";
+		}
+		return temp;
 	}
 }

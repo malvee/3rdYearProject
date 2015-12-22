@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Trainer 
 {
 	final int Ngen=200;
-	final int N=15;
+	final int N=20;
 	final int M=3;
 	final int d=3;//must be >=1
 	final int n=10;
@@ -18,7 +18,7 @@ public class Trainer
 		this.Ag=Ag;
 		Ab = new Antibody[N];
 		for(int i=0;i<N;i++)
-			Ab[i]=new Antibody();
+			Ab[i]=new Antibody(4, 10);
 	}
 	private void permuteAg()
 	{
@@ -59,7 +59,7 @@ public class Trainer
 						Ab[j] = R.mutatedAb[j-3];
 					}
 					for(int j=0;j<d;j++)
-						Ab[indx[j]]= new Antibody();
+						Ab[indx[j]]= new Antibody(4, 10);
 				}
 				
 			}
@@ -88,7 +88,7 @@ public class Trainer
 				int D[] = new int[4];	// D has vals in mm
 				for(int k=0;k<4;k++)
 					D[k] = (int)(10*X[k]);	//change cm to mm so int
-				Ag[i*50+j]=new Antigen(i,D);	// 3 classes, first 50 Antigen(0, array)
+				Ag[i*50+j]=new Antigen(i,D, 4);	// 3 classes, first 50 Antigen(0, array)
 			}
 		scanner.close();
 		Trainer T = new Trainer(Ag);
