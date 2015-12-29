@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Trainer 
@@ -11,9 +11,11 @@ public class Trainer
 	final int d;//must be >=1
 	final int n;
 	final double p;
+	final int antibodySize;
+	final int antibodyRange;
 	Antibody Ab[];
 	Antigen Ag[];
-	public Trainer(Antigen[] Ag, int Ngen, int N, int M, int d, int n, double p)
+	public Trainer(Antigen[] Ag, int Ngen, int N, int M, int d, int n, double p, int antibodySize, int antibodyRange)
 	{
 		this.Ngen = Ngen;
 		this.N = N;
@@ -22,10 +24,11 @@ public class Trainer
 		this.n = n;
 		this.p = p;
 		this.Ag=Ag;
+		this.antibodySize = antibodySize;
+		this.antibodyRange = antibodyRange;
 		Ab = new Antibody[N];
 		for(int i=0;i<N;i++)
-			//edit
-			Ab[i]=new Antibody(13, 100);
+			Ab[i]=new Antibody(antibodySize, antibodyRange);
 	}
 	private void permuteAg()
 	{
@@ -61,13 +64,12 @@ public class Trainer
 				{
 					//R.mutatedAb.length might be bigger than Ab.length
 					int looper = ((R.mutatedAb.length - Ab.length) > 0 ? Ab.length : R.mutatedAb.length ) ;
-					//only fill from index 3 till possibly end
-					//
-					for(int j = 3; j < looper; j++){
-						Ab[j] = R.mutatedAb[j-3];
+					//only fill from index M till possibly end
+					for(int j = 2; j < looper; j++){
+						Ab[j] = R.mutatedAb[j-2];
 					}
 					for(int j=0;j<d;j++)
-						//edit
+			
 						Ab[indx[j]]= new Antibody(Ab[0].size, Ab[0].range);
 				}
 				
@@ -102,7 +104,7 @@ public class Trainer
 				//depends on data
 			}
 		scanner.close();
-		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01);
+		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01, 4, 10);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
@@ -125,9 +127,14 @@ public class Trainer
 		}
 		for(int i=0;i<3;i++)
 			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+		double hit = 0.0;
+		for(int i =0; i < 3; i++){
+			hit += S[i][i];
+		}
+		System.out.println("Accuracy is " + hit/150 *100);
 	}
 	public static void wine() throws IOException{
-		String fileName = "wine.data.txt";
+		String fileName = "wine.data.txtProcessed";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[178];
 		for(int i = 0; i < Ag.length; i++){
@@ -142,7 +149,7 @@ public class Trainer
 			Ag[i] = new Antigen(new Integer(temp[0])-1, D, 13);
 		}
 		scanner.close();
-		Trainer T = new Trainer(Ag,400,25,3,3,8,0.01);
+		Trainer T = new Trainer(Ag,400,25,3,3,8,0.01, 13, 600);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
@@ -166,11 +173,179 @@ public class Trainer
 		}
 		for(int i=0;i<3;i++)
 			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+		double hit = 0.0;
+		for(int i =0; i < 3; i++){
+			hit += S[i][i];
+		}
+		System.out.println("Accuracy is " + hit/178 *100);
+	}
+	public static void liverDisorder() throws IOException{
+		String fileName = "bupa.data.txtProcessed";
+		Scanner scanner =  new Scanner(Paths.get(fileName));
+		Antigen[] Ag = new Antigen[345];
+		for(int i = 0; i < Ag.length; i++){
+			String str = scanner.nextLine();
+			String[] temp = str.split(",");
+			double X[]= new double[6];
+			for(int k=0;k<temp.length-1;k++)
+				X[k]=new Double(temp[k]);
+			int D[] = new int[6];	// D has vals in mm
+			for(int k=0;k<X.length;k++)
+				D[k] = (int)(X[k]);	//change cm to mm so int
+			Ag[i] = new Antigen(new Integer(temp[6])-1, D, 6);
+		}
+		scanner.close();
+		Trainer T = new Trainer(Ag,600,20,2,5,20,0.01, 6, 500);
+		
+		Antibody[] Ab = T.train();	//all the work
+		
+		int S[][] = new int[2][2];
+		for(int i=0;i<Ag.length;i++)
+		{
+			int o = Ag[i].getLabel();
+			
+			int indx=-1;
+			double max=-1;
+			for(int j=0;j<2;j++)
+			{
+				double fit = Ag[i].affinity(Ab[j]);
+				if(fit>max)
+				{
+					max=fit;
+					indx=j;
+				}
+			}
+			S[o][indx]++;
+		}
+		for(int i=0;i<2;i++)
+			System.out.println(S[i][0]+" "+S[i][1]);
+		double hit = 0.0;
+		for(int i =0; i < 2; i++){
+			hit += S[i][i];
+		}
+		System.out.println("Accuracy is " + hit/345 *100);
+	}
+	public static void ecoli() throws IOException{
+		Hashtable<String, Integer> classifier = new Hashtable();
+		classifier.put("cp", new Integer(0));
+		classifier.put("im", new Integer(1));
+		classifier.put("pp", new Integer(2));
+		classifier.put("imU", new Integer(3)); 
+		classifier.put("om", new Integer(4));
+		classifier.put("omL", new Integer(5));
+		classifier.put("imL", new Integer(6));
+		classifier.put("imS", new Integer(7));
+		String fileName = "ecoli.data.txt.removed";
+		Scanner scanner =  new Scanner(Paths.get(fileName));
+		Antigen[] Ag = new Antigen[336];
+		for(int i = 0; i < Ag.length; i++){
+			String str = scanner.nextLine();
+			String[] temp = str.split("\\s+");
+			double X[]= new double[7];
+			for(int k=0;k<temp.length-1;k++)
+				X[k]=new Double(temp[k]);
+			int D[] = new int[7];	// D has vals in mm
+			for(int k=0;k<X.length;k++)
+				D[k] = (int)(100*X[k]);	//change cm to mm so int
+			Ag[i] = new Antigen(classifier.get(temp[7]), D, 7);
+		}
+		scanner.close();
+		Trainer T = new Trainer(Ag,400,20,7,3,5,0.01, 7, 50);
+		
+		Antibody[] Ab = T.train();	//all the work
+		//number of classes
+		int S[][] = new int[8][8];
+		for(int i=0;i<Ag.length;i++)
+		{
+			int o = Ag[i].getLabel();
+			
+			int indx=-1;
+			double max=-1;
+			//size of antigen
+			for(int j=0;j<7;j++)
+			{
+				double fit = Ag[i].affinity(Ab[j]);
+				if(fit>max)
+				{
+					max=fit;
+					indx=j;
+				}
+			}
+			S[o][indx]++;
+		}
+		for(int i=0;i<8;i++)
+			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]+" "+S[i][3]+" "+S[i][4]+" "+S[i][5]+" "+S[i][6]+" "+S[i][7]);
+		double hit = 0.0;
+		for(int i =0; i < 8; i++){
+			hit += S[i][i];
+		}
+		System.out.println("Accuracy is " + hit/336 *100);
+	}
+	public static void breastCancer()  throws IOException{
+		String fileName = "breast-cancer-wisconsin.data.txt";
+		Scanner scanner =  new Scanner(Paths.get(fileName));
+		Antigen[] Ag = new Antigen[683];
+		for(int i = 0; i < Ag.length; i++){
+			String str = scanner.nextLine();
+			String[] temp = str.split(",");
+			double X[]= new double[9];
+			for(int k=0;k<temp.length-2;k++)
+				X[k]=new Double(temp[k+1]);
+			int D[] = new int[9];	// D has vals in mm
+			for(int k=0;k<X.length;k++)
+				D[k] = (int)(X[k]);	//change cm to mm so int
+			Ag[i] = new Antigen( (new Integer(temp[10])/2)-1, D, 9);
+		}
+		scanner.close();
+		Trainer T = new Trainer(Ag,600,20,2,5,20,0.01, 9, 5);
+		
+		Antibody[] Ab = T.train();	//all the work
+		
+		int S[][] = new int[2][2];
+		for(int i=0;i<Ag.length;i++)
+		{
+			int o = Ag[i].getLabel();
+			
+			int indx=-1;
+			double max=-1;
+			for(int j=0;j<2;j++)
+			{
+				double fit = Ag[i].affinity(Ab[j]);
+				if(fit>max)
+				{
+					max=fit;
+					indx=j;
+				}
+			}
+			S[o][indx]++;
+		}
+		for(int i=0;i<2;i++)
+			System.out.println(S[i][0]+" "+S[i][1]);
+		double hit = 0.0;
+		for(int i =0; i < 2; i++){
+			hit += S[i][i];
+		}
+		System.out.println("Accuracy is " + hit/683 *100);
 	}
 	public static void main(String ...args) throws IOException
 	{
 		//one cheeky detail is that antigen class label starts at 0
-		iris();
-		wine();
+//		iris();
+//		System.out.println();
+//		wine();
+//		System.out.println();
+//		for (int i =0; i < 20; i++){
+//			liverDisorder();
+//			System.out.println();
+//		}
+//		for (int i =0; i < 20; i++){
+//			ecoli();
+//			System.out.println();
+//		}
+		for (int i =0; i < 20; i++){
+			breastCancer();
+			System.out.println();
+		}
+
 	}
 }

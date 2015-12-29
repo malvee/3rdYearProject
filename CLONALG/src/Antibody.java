@@ -25,8 +25,10 @@ public class Antibody implements Cloneable
 		for(int i=0;i<size;i++)
 		{
 			double x = random(D[i],(p*D[i]+0.1)/2.0);
-			if(x<=0.0)
+			if(x<=0.0){
+				//System.out.println(D[i] + " " + x + "happened" + p);
 				x=0.1;
+			}	
 			D[i]=x;
 		}
 	}
