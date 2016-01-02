@@ -83,7 +83,8 @@ public class Trainer
 		
 		return rst;
 	}
-	public static void iris() throws IOException{
+
+	public static double iris() throws IOException{
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[150];
@@ -113,19 +114,41 @@ public class Trainer
 				//depends on data
 			}
 		scanner.close();
-		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01, 4, 4);
+		Antigen[] trainSet = new Antigen[135];
+		ArrayList<Integer> holder = new ArrayList<Integer>();
+		ArrayList<Antigen> trainSetArrayList = new ArrayList<Antigen>();
+		for(int i = 0; i < 10; i++){
+			holder.add(i);
+		}
+		for(int i = 0; i < 9; i++){
+			int temp = new Random().nextInt(holder.size());
+			int startIndex = holder.get(temp);
+			for(int j = startIndex*15; j < (startIndex*15)+15; j++){
+				trainSetArrayList.add(Ag[j]);
+			}
+			holder.remove(temp);
+		}
+		Antigen[] testSet = new Antigen[15];
+		for(int j = (holder.get(0)*15); j <  (holder.get(0)*15) + 15; j++){
+			testSet[j-(holder.get(0)*15)] = Ag[j];
+		}
+		for(int i = 0; i < trainSetArrayList.size(); i++){
+			trainSet[i] = trainSetArrayList.get(i);
+		}
+		
+		Trainer T = new Trainer(trainSet, 400,20,3,3,10,0.01, 4, 4);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
 		int S[][] = new int[3][3];
-		for(int i=0;i<150;i++)
+		for(int i=0;i<testSet.length;i++)
 		{
-			int o = Ag[i].getLabel();
+			int o = testSet[i].getLabel();
 			int indx=-1;
 			double max=-1;
 			for(int j=0;j<3;j++)
 			{
-				double fit = Ag[i].affinity(Ab[j]);
+				double fit = testSet[i].affinity(Ab[j]);
 				if(fit>max)
 				{
 					max=fit;
@@ -140,11 +163,12 @@ public class Trainer
 		for(int i =0; i < 3; i++){
 			hit += S[i][i];
 		}
-		System.out.println("Accuracy is " + hit/150 *100);
+		return(hit/15 *100);
 	}
 	public static void wine() throws IOException{
 		String fileName = "wine.data.txtProcessed";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
+		//25 in testSet
 		Antigen[] Ag = new Antigen[178];
 		for(int i = 0; i < Ag.length; i++){
 			String str = scanner.nextLine();
@@ -191,6 +215,7 @@ public class Trainer
 	public static void liverDisorder() throws IOException{
 		String fileName = "bupa.data.txtProcessed";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
+		//39 in testset
 		Antigen[] Ag = new Antigen[345];
 		for(int i = 0; i < Ag.length; i++){
 			String str = scanner.nextLine();
@@ -247,6 +272,7 @@ public class Trainer
 		String fileName = "ecoli.data.txt.removed";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[336];
+		//39 in test set
 		for(int i = 0; i < Ag.length; i++){
 			String str = scanner.nextLine();
 			String[] temp = str.split("\\s+");
@@ -294,6 +320,7 @@ public class Trainer
 		String fileName = "breast-cancer-wisconsin.data.txt";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[683];
+		//71 in testset
 		for(int i = 0; i < Ag.length; i++){
 			String str = scanner.nextLine();
 			String[] temp = str.split(",");
@@ -338,12 +365,13 @@ public class Trainer
 	}
 	public static void main(String ...args) throws IOException
 	{
+		double total = 0.0;
 		//one cheeky detail is that antigen class label starts at 0
-		for(int i = 0; i < 20; i++){
-			iris();
+		for(int i = 0; i < 10; i++){
+			total += iris();
 		}
 		
-		System.out.println();
+		System.out.println("Iris accuracy is " + total/10);
 //		wine();
 //		System.out.println();
 //		for (int i =0; i < 20; i++){
