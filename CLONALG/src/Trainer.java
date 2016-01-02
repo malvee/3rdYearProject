@@ -87,8 +87,7 @@ public class Trainer
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[150];
-		for(int i=0;i<3;i++)	// i < M
-			for(int j=0;j<50;j++)	//assuming each class has equal number of examples
+			for(int j=0;j<150;j++)	//assuming each class has equal number of examples
 			{
 				String str = scanner.nextLine();
 				String[] temp = str.split(",");
@@ -100,11 +99,21 @@ public class Trainer
 				int D[] = new int[4];	// D has vals in mm
 				for(int k=0;k<4;k++)
 					D[k] = (int)(10*X[k]);	//change cm to mm so int
-				Ag[i*50+j]=new Antigen(i,D, 4);	// 3 classes, first 50 Antigen(0, array)
+				int classLabel;
+				if(j < 50){
+					classLabel = 0;
+				}	
+				else if (j < 100){
+					classLabel = 1;
+				}
+				else{
+					classLabel = 2;
+				}	
+				Ag[j]=new Antigen(classLabel,D, 4);	// 3 classes, first 50 Antigen(0, array)
 				//depends on data
 			}
 		scanner.close();
-		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01, 4, 10);
+		Trainer T = new Trainer(Ag, 400,20,3,3,10,0.01, 4, 4);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
@@ -330,8 +339,11 @@ public class Trainer
 	public static void main(String ...args) throws IOException
 	{
 		//one cheeky detail is that antigen class label starts at 0
-//		iris();
-//		System.out.println();
+		for(int i = 0; i < 20; i++){
+			iris();
+		}
+		
+		System.out.println();
 //		wine();
 //		System.out.println();
 //		for (int i =0; i < 20; i++){
@@ -342,10 +354,10 @@ public class Trainer
 //			ecoli();
 //			System.out.println();
 //		}
-		for (int i =0; i < 20; i++){
-			breastCancer();
-			System.out.println();
-		}
+//		for (int i =0; i < 20; i++){
+//			breastCancer();
+//			System.out.println();
+//		}
 
 	}
 }
