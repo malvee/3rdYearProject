@@ -157,8 +157,8 @@ public class Trainer
 			}
 			S[o][indx]++;
 		}
-		for(int i=0;i<3;i++)
-			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+//		for(int i=0;i<3;i++)
+//			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
 		double hit = 0.0;
 		for(int i =0; i < 3; i++){
 			hit += S[i][i];
@@ -443,10 +443,15 @@ public class Trainer
 	{
 		double total = 0.0;
 		//one cheeky detail is that antigen class label starts at 0
-//		for(int i = 0; i < 10; i++){
-//			total += iris();
-//		}
-//		System.out.println("Iris accuracy is " + total/10);
+		for(int j = 0; j < 10; j++){
+			total = 0;
+			for(int i = 0; i < 10; i++){
+				total += iris();
+			}
+			System.out.println("Iris accuracy is " + total/10);
+		}
+			
+		
 		
 //		total = 0;
 //		for(int i = 0; i < 10; i++){
@@ -465,11 +470,11 @@ public class Trainer
 //		}
 //		System.out.println("ecoli accuracy is " + total/10);
 		
-		total = 0;
-		for(int i = 0; i < 10; i++){
-			total += breastCancer();
-		}
-		System.out.println("breast cancer accuracy is " + total/10);
+//		total = 0;
+//		for(int i = 0; i < 10; i++){
+//			total += breastCancer();
+//		}
+//		System.out.println("breast cancer accuracy is " + total/10);
 
 	}
 }
