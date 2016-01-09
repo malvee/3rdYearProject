@@ -114,41 +114,38 @@ public class Trainer
 				//depends on data
 			}
 		scanner.close();
-		Antigen[] trainSet = new Antigen[135];
-		ArrayList<Integer> holder = new ArrayList<Integer>();
-		ArrayList<Antigen> trainSetArrayList = new ArrayList<Antigen>();
-		for(int i = 0; i < 10; i++){
-			holder.add(i);
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		for(int i = 0; i < Ag.length; i++){
+			trainSet.add(Ag[i]);
 		}
-		for(int i = 0; i < 9; i++){
-			int temp = new Random().nextInt(holder.size());
-			int startIndex = holder.get(temp);
-			for(int j = startIndex*15; j < (startIndex*15)+15; j++){
-				trainSetArrayList.add(Ag[j]);
-			}
-			holder.remove(temp);
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		for(int i = 0; i < 15; i++){
+			int index = new Random().nextInt(trainSet.size());
+			testSet.add(trainSet.get(index));
+			trainSet.remove(index);
+			
 		}
-		Antigen[] testSet = new Antigen[15];
-		for(int j = (holder.get(0)*15); j <  (holder.get(0)*15) + 15; j++){
-			testSet[j-(holder.get(0)*15)] = Ag[j];
+		Antigen[] testData = new Antigen[15];
+		for(int i = 0; i < 15; i++){
+			testData[i] = testSet.get(i);
 		}
-		for(int i = 0; i < trainSetArrayList.size(); i++){
-			trainSet[i] = trainSetArrayList.get(i);
+		Antigen[] trainData = new Antigen[135];
+		for(int i = 0; i < 135; i++){
+			trainData[i] = trainSet.get(i);
 		}
-		
-		Trainer T = new Trainer(trainSet, 400,20,3,3,10,0.01, 4, 4);
+		Trainer T = new Trainer(trainData, 400,20,3,3,10,0.01, 4, 4);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
 		int S[][] = new int[3][3];
-		for(int i=0;i<testSet.length;i++)
+		for(int i=0;i<testData.length;i++)
 		{
-			int o = testSet[i].getLabel();
+			int o = testData[i].getLabel();
 			int indx=-1;
 			double max=-1;
 			for(int j=0;j<3;j++)
 			{
-				double fit = testSet[i].affinity(Ab[j]);
+				double fit = testData[i].affinity(Ab[j]);
 				if(fit>max)
 				{
 					max=fit;
@@ -223,8 +220,8 @@ public class Trainer
 			}
 			S[o][indx]++;
 		}
-		for(int i=0;i<3;i++)
-			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+//		for(int i=0;i<3;i++)
+//			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
 		double hit = 0.0;
 		for(int i =0; i < 3; i++){
 			hit += S[i][i];
@@ -289,8 +286,8 @@ public class Trainer
 			}
 			S[o][indx]++;
 		}
-		for(int i=0;i<2;i++)
-			System.out.println(S[i][0]+" "+S[i][1]);
+//		for(int i=0;i<2;i++)
+//			System.out.println(S[i][0]+" "+S[i][1]);
 		double hit = 0.0;
 		for(int i =0; i < 2; i++){
 			hit += S[i][i];
@@ -342,7 +339,7 @@ public class Trainer
 		for(int i = 0; i < 297; i++){
 			trainData[i] = trainSet.get(i);
 		}
-		Trainer T = new Trainer(trainData,400,20,7,3,5,0.01, 7, 50);
+		Trainer T = new Trainer(trainData,600,12,7,3,1,0.01, 7, 40);
 		
 		Antibody[] Ab = T.train();	//all the work
 		//number of classes
@@ -365,8 +362,9 @@ public class Trainer
 			}
 			S[o][indx]++;
 		}
-		for(int i=0;i<8;i++)
+		for(int i=0;i<1;i++)
 			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]+" "+S[i][3]+" "+S[i][4]+" "+S[i][5]+" "+S[i][6]+" "+S[i][7]);
+//		System.out.println();
 		double hit = 0.0;
 		for(int i =0; i < 8; i++){
 			hit += S[i][i];
@@ -439,42 +437,53 @@ public class Trainer
 		}
 		return(hit/71 *100);
 	}
-	public static void main(String ...args) throws IOException
-	{
+	public static void main(String ...args) throws IOException{
 		double total = 0.0;
 		//one cheeky detail is that antigen class label starts at 0
+//		for(int j = 0; j < 10; j++){
+//			total = 0;
+//			for(int i = 0; i < 10; i++){
+//				total += iris();
+//			}
+//			System.out.println("Iris accuracy is " + total/10);
+//		}
+//			
+		
+		
+		
+//		for(int j = 0; j < 10; j++){
+//			total = 0;
+//			for(int i = 0; i < 10; i++){
+//				total += wine();
+//			}
+//			System.out.println("wine accuracy is " + total/10);
+//		}
+		
+//		for(int j = 0; j < 10; j++){
+//			total = 0;
+//			for(int i = 0; i < 10; i++){
+//				total += liverDisorder();
+//			}
+//			System.out.println("liverDisorder accuracy is " + total/10);
+//		}
+		
 		for(int j = 0; j < 10; j++){
 			total = 0;
 			for(int i = 0; i < 10; i++){
-				total += iris();
+				double temp = ecoli();
+				//System.out.println(temp);
+				total += temp;
 			}
-			System.out.println("Iris accuracy is " + total/10);
+			System.out.println("ecoli accuracy is " + total/10);
 		}
-			
 		
-		
-//		total = 0;
-//		for(int i = 0; i < 10; i++){
-//			total += wine();
+//		for(int j = 0; j < 10; j++){
+//			total = 0;
+//			for(int i = 0; i < 10; i++){
+//				total += breastCancer();
+//			}
+//			System.out.println("breast cancer accuracy is " + total/10);
 //		}
-//		System.out.println("wine accuracy is " + total/10);
-		
-//		total = 0;
-//		for(int i = 0; i < 10; i++){
-//			total += liverDisorder();
-//		}
-//		System.out.println("liverDisorder accuracy is " + total/10);
-//		total = 0;
-//		for(int i = 0; i < 10; i++){
-//			total += ecoli();
-//		}
-//		System.out.println("ecoli accuracy is " + total/10);
-		
-//		total = 0;
-//		for(int i = 0; i < 10; i++){
-//			total += breastCancer();
-//		}
-//		System.out.println("breast cancer accuracy is " + total/10);
 
 	}
 }
