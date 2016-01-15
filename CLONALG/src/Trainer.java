@@ -468,6 +468,7 @@ public class Trainer
 //		}
 		
 		for(int j = 0; j < 10; j++){
+			long start = System.nanoTime();
 			total = 0;
 			for(int i = 0; i < 10; i++){
 				double temp = ecoli();
@@ -475,6 +476,7 @@ public class Trainer
 				total += temp;
 			}
 			System.out.println("ecoli accuracy is " + total/10);
+			System.out.println("Time taken " + (System.nanoTime() - start));
 		}
 		
 //		for(int j = 0; j < 10; j++){
