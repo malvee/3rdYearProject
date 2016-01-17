@@ -4,7 +4,7 @@ import java.util.*;
 
 
 public class Trainer 
-{
+{ 
 	final int Ngen;
 	final int N;
 	final int M;
@@ -84,7 +84,7 @@ public class Trainer
 		return rst;
 	}
 
-	public static double iris() throws IOException{
+	public static void iris() throws IOException{
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner =  new Scanner(Paths.get(fileName));
 		Antigen[] Ag = new Antigen[150];
@@ -118,34 +118,53 @@ public class Trainer
 		for(int i = 0; i < Ag.length; i++){
 			trainSet.add(Ag[i]);
 		}
+		
+		// final testing 
 		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-		for(int i = 0; i < 15; i++){
+		for(int i = 0; i < 30; i++){
 			int index = new Random().nextInt(trainSet.size());
 			testSet.add(trainSet.get(index));
 			trainSet.remove(index);
-			
 		}
-		Antigen[] testData = new Antigen[15];
-		for(int i = 0; i < 15; i++){
+		Antigen[] testData = new Antigen[30];
+		for(int i = 0; i < 30; i++){
 			testData[i] = testSet.get(i);
 		}
-		Antigen[] trainData = new Antigen[135];
-		for(int i = 0; i < 135; i++){
-			trainData[i] = trainSet.get(i);
+		double maxAccuracy = 0;
+		Antibody bestPattern[] = new Antibody[3];
+		for(int k = 0; k < 10; k++){
+		ArrayList<Antigen> trainSetTemp = new ArrayList<Antigen>();
+		for(int i = 0; i < trainSet.size(); i++){
+			trainSetTemp.add(trainSet.get(i));
 		}
+		ArrayList<Antigen> partitionedTestSet = new ArrayList<Antigen>();
+		for(int i = 0; i < 12; i++){
+			int index = new Random().nextInt(trainSetTemp.size());
+			partitionedTestSet.add(trainSetTemp.get(index));
+			trainSetTemp.remove(index);
+		}
+		Antigen[] partitionedTestData = new Antigen[12];
+		for(int i = 0; i < 12; i++){
+			partitionedTestData[i] = partitionedTestSet.get(i);
+		}
+		Antigen[] trainData = new Antigen[108];
+		for(int i = 0; i < 108; i++){
+			trainData[i] = trainSetTemp.get(i);
+		}
+		
 		Trainer T = new Trainer(trainData, 400,20,3,3,10,0.01, 4, 4);
 		
 		Antibody[] Ab = T.train();	//all the work
 		
 		int S[][] = new int[3][3];
-		for(int i=0;i<testData.length;i++)
+		for(int i=0;i<partitionedTestData.length;i++)
 		{
-			int o = testData[i].getLabel();
+			int o = partitionedTestData[i].getLabel();
 			int indx=-1;
 			double max=-1;
 			for(int j=0;j<3;j++)
 			{
-				double fit = testData[i].affinity(Ab[j]);
+				double fit = partitionedTestData[i].affinity(Ab[j]);
 				if(fit>max)
 				{
 					max=fit;
@@ -154,13 +173,44 @@ public class Trainer
 			}
 			S[o][indx]++;
 		}
-//		for(int i=0;i<3;i++)
-//			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
 		double hit = 0.0;
 		for(int i =0; i < 3; i++){
 			hit += S[i][i];
 		}
-		return(hit/15 *100);
+		double accuracy = hit/12 *100;
+		if(accuracy > maxAccuracy){
+			bestPattern = Ab;
+		}
+	}
+		int S[][] = new int[3][3];
+		for(int i=0;i<testData.length;i++)
+		{
+			int o = testData[i].getLabel();
+			int indx=-1;
+			double max=-1;
+			for(int j=0;j<3;j++)
+			{
+				double fit = testData[i].affinity(bestPattern[j]);
+				if(fit>max)
+				{
+					max=fit;
+					indx=j;
+				}
+			}
+			S[o][indx]++;
+		}
+		for(int i=0;i<3;i++)
+			System.out.println(S[i][0]+" "+S[i][1]+" "+S[i][2]);
+		double hit = 0.0;
+		for(int i =0; i < 3; i++){
+			hit += S[i][i];
+		}
+		double accuracy = hit/30 *100;
+		System.out.println(accuracy);
+		for(int i = 0; i < 3; i++){
+			System.out.println(bestPattern[i]);
+		}
+
 	}
 	public static double wine() throws IOException{
 		String fileName = "wine.data.txtProcessed";
@@ -439,6 +489,7 @@ public class Trainer
 	}
 	public static void main(String ...args) throws IOException{
 		double total = 0.0;
+		iris();
 		//one cheeky detail is that antigen class label starts at 0
 //		for(int j = 0; j < 10; j++){
 //			total = 0;
@@ -467,17 +518,17 @@ public class Trainer
 //			System.out.println("liverDisorder accuracy is " + total/10);
 //		}
 		
-		for(int j = 0; j < 10; j++){
-			long start = System.nanoTime();
-			total = 0;
-			for(int i = 0; i < 10; i++){
-				double temp = ecoli();
-				//System.out.println(temp);
-				total += temp;
-			}
-			System.out.println("ecoli accuracy is " + total/10);
-			System.out.println("Time taken " + (System.nanoTime() - start));
-		}
+//		for(int j = 0; j < 10; j++){
+//			long start = System.nanoTime();
+//			total = 0;
+//			for(int i = 0; i < 10; i++){
+//				double temp = ecoli();
+//				//System.out.println(temp);
+//				total += temp;
+//			}
+//			System.out.println("ecoli accuracy is " + total/10);
+//			System.out.println("Time taken " + (System.nanoTime() - start));
+//		}
 		
 //		for(int j = 0; j < 10; j++){
 //			total = 0;
