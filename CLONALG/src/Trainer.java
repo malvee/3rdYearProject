@@ -560,7 +560,7 @@ public class Trainer {
 			int o = testData[i].getLabel();
 			int indx = -1;
 			double max = -1;
-			for (int j = 0; j < 7; j++) {
+			for (int j = 0; j < 8; j++) {
 				double fit = testData[i].affinity(Ab[j]);
 				if (fit > max) {
 					max = fit;
@@ -582,23 +582,164 @@ public class Trainer {
 		System.out.println(accuracy);
 	}
 
+	public static double breastCancer(ArrayList<Antigen> trainSet1, Object[] argsHolder)
+			throws IOException {
+		double averageAccuracy = 0.0;
+		for (int k = 0; k < 10; k++) {
+			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
+			ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+			for (int i = 0; i < 55; i++) {
+				int index = new Random().nextInt(trainSet.size());
+				testSet.add(trainSet.get(index));
+				trainSet.remove(index);
+			}
+			System.out.println("trainSet " + trainSet.size() + " testSet "
+					+ testSet.size());
+			Antigen[] trainData = new Antigen[491];
+			for (int i = 0; i < trainData.length; i++) {
+				trainData[i] = trainSet.get(i);
+			}
+			Antigen[] testData = new Antigen[55];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = testSet.get(i);
+			}
+			Trainer T = new Trainer(trainData, argsHolder);
+			Antibody[] Ab = T.train(); // all the work
+
+			int S[][] = new int[2][2];
+			for (int i = 0; i < testData.length; i++) {
+				int o = testData[i].getLabel();
+				int indx = -1;
+				double max = -1;
+				for (int j = 0; j < 2; j++) {
+					double fit = testData[i].affinity(Ab[j]);
+					if (fit > max) {
+						max = fit;
+						indx = j;
+					}
+				}
+				S[o][indx]++;
+			}
+			double hit = 0.0;
+			for (int i = 0; i < 2; i++) {
+				hit += S[i][i];
+			}
+			double accuracy = hit / 55 * 100;
+			averageAccuracy += accuracy;
+
+		}
+		return averageAccuracy / 10;
+
+	}
+	public static ArrayList<ArrayList<Antigen>> prepareBreastCancer()
+			throws IOException {
+		 String fileName = "breast-cancer-wisconsin.data.txt";
+	 Scanner scanner = new Scanner(Paths.get(fileName));
+	 Antigen[] Ag = new Antigen[683];
+	 for (int i = 0; i < Ag.length; i++) {
+	 String str = scanner.nextLine();
+	 String[] temp = str.split(",");
+	 double X[] = new double[9];
+	 for (int k = 0; k < temp.length - 2; k++)
+	 X[k] = new Double(temp[k + 1]);
+	 int D[] = new int[9]; // D has vals in mm
+	 for (int k = 0; k < X.length; k++)
+	 D[k] = (int) (X[k]); // change cm to mm so int
+	 Ag[i] = new Antigen((new Integer(temp[10]) / 2) - 1, D, 9);
+	 }
+		scanner.close();
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		for (int i = 0; i < Ag.length; i++) {
+			trainSet.add(Ag[i]);
+		}
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		for (int i = 0; i < 137; i++) {
+			int index = new Random().nextInt(trainSet.size());
+			testSet.add(trainSet.get(index));
+			trainSet.remove(index);
+		}
+		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
+		ans.add(trainSet);
+		ans.add(testSet);
+		return ans;
+
+	}
+	public static void runBreastCancer() throws IOException {
+		ArrayList<ArrayList<Antigen>> breastCancerData = prepareBreastCancer();
+		ArrayList<Double> breastCancerResult = new ArrayList<Double>();
+		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
+		Object[] temp;
+		temp = new Object[] { 600, 20, 2, 5, 20, 0.01, 9, 5, 1 };
+		argsHolder.add(temp);
+		temp = new Object[] { 500, 10, 2, 3, 10, 0.01, 9, 5, 2 };
+		argsHolder.add(temp);
+		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(0)));
+		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(1)));
+		for (int i = 0; i < breastCancerResult.size(); i++) {
+			System.out.println(breastCancerResult.get(i));
+		}
+		Antigen[] trainData;
+		Antigen[] testData;
+		trainData = new Antigen[breastCancerData.get(0).size()];
+		testData = new Antigen[breastCancerData.get(1).size()];
+		for (int i = 0; i < breastCancerData.get(0).size(); i++) {
+			trainData[i] = breastCancerData.get(0).get(i);
+		}
+		for (int i = 0; i < breastCancerData.get(1).size(); i++) {
+			testData[i] = breastCancerData.get(1).get(i);
+		}
+		int bestParamIndex = 0;
+		double maxAccuracy = 0;
+		for (int i = 0; i < breastCancerResult.size(); i++) {
+			if (breastCancerResult.get(i) > maxAccuracy) {
+				maxAccuracy = breastCancerResult.get(i);
+				bestParamIndex = i;
+			}
+		}
+		Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+		Antibody[] Ab = T.train(); // all the work
+
+		int S[][] = new int[2][2];
+		for (int i = 0; i < testData.length; i++) {
+			int o = testData[i].getLabel();
+			int indx = -1;
+			double max = -1;
+			for (int j = 0; j < 2; j++) {
+				double fit = testData[i].affinity(Ab[j]);
+				if (fit > max) {
+					max = fit;
+					indx = j;
+				}
+			}
+			S[o][indx]++;
+		}
+		double hit = 0.0;
+		for (int i = 0; i < 2; i++) {
+			System.out.println(S[i][0] + " " + S[i][1]);
+		}
+		for (int i = 0; i < 2; i++) {
+			hit += S[i][i];
+		}
+		double accuracy = hit / 137 * 100;
+		System.out.println(accuracy);
+	}
 	// public static double breastCancer() throws IOException {
-	// String fileName = "breast-cancer-wisconsin.data.txt";
-	// Scanner scanner = new Scanner(Paths.get(fileName));
-	// Antigen[] Ag = new Antigen[683];
-	// // 71 in testset
-	// for (int i = 0; i < Ag.length; i++) {
-	// String str = scanner.nextLine();
-	// String[] temp = str.split(",");
-	// double X[] = new double[9];
-	// for (int k = 0; k < temp.length - 2; k++)
-	// X[k] = new Double(temp[k + 1]);
-	// int D[] = new int[9]; // D has vals in mm
-	// for (int k = 0; k < X.length; k++)
-	// D[k] = (int) (X[k]); // change cm to mm so int
-	// Ag[i] = new Antigen((new Integer(temp[10]) / 2) - 1, D, 9);
-	// }
-	// scanner.close();
+//	 String fileName = "breast-cancer-wisconsin.data.txt";
+//	 Scanner scanner = new Scanner(Paths.get(fileName));
+//	 Antigen[] Ag = new Antigen[683];
+//	 // 71 in testset
+//	 for (int i = 0; i < Ag.length; i++) {
+//	 String str = scanner.nextLine();
+//	 String[] temp = str.split(",");
+//	 double X[] = new double[9];
+//	 for (int k = 0; k < temp.length - 2; k++)
+//	 X[k] = new Double(temp[k + 1]);
+//	 int D[] = new int[9]; // D has vals in mm
+//	 for (int k = 0; k < X.length; k++)
+//	 D[k] = (int) (X[k]); // change cm to mm so int
+//	 Ag[i] = new Antigen((new Integer(temp[10]) / 2) - 1, D, 9);
+//	 }
+//	 scanner.close();
 	// ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
 	// for (int i = 0; i < Ag.length; i++) {
 	// trainSet.add(Ag[i]);
@@ -759,8 +900,9 @@ public class Trainer {
 	public static void main(String... args) throws IOException {
 		//runIris(); 
 		//runWine();
-		runliverDisorder();
+		//runliverDisorder();
 		//runEcoli();
+		runBreastCancer();
 		// one cheeky detail is that antigen class label starts at 0
 		// for(int j = 0; j < 10; j++){
 		// total = 0;
