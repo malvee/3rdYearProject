@@ -81,7 +81,8 @@ public class Trainer {
 		return rst;
 	}
 
-	public static double iris(ArrayList<Antigen> trainSet1, Object[] argsHolder) throws IOException {
+	public static double iris(ArrayList<Antigen> trainSet1, Object[] argsHolder)
+			throws IOException {
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -134,7 +135,7 @@ public class Trainer {
 			throws IOException {
 		String fileName = "wine.data.txtProcessed";
 		Scanner scanner = new Scanner(Paths.get(fileName));
-				Antigen[] Ag = new Antigen[178];
+		Antigen[] Ag = new Antigen[178];
 		for (int i = 0; i < Ag.length; i++) {
 			String str = scanner.nextLine();
 			String[] temp = str.split(",");
@@ -163,67 +164,70 @@ public class Trainer {
 		return ans;
 
 	}
+
 	public static void runWine() throws IOException {
 		// train - 142, test - 36
-			ArrayList<ArrayList<Antigen>> wineData = prepareWine();
-			ArrayList<Double> wineResult = new ArrayList<Double>();
-			ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
-			Object[] temp;
-			temp = new Object[] {400, 25, 3, 3, 8, 0.01, 13, 600, 1};
-			argsHolder.add(temp);
-			temp = new Object[] {600, 25, 3, 3, 8, 0.01, 13, 400, 2};
-			argsHolder.add(temp);
-			wineResult.add(wine(wineData.get(0), argsHolder.get(0)));
-			wineResult.add(wine(wineData.get(0), argsHolder.get(1) ));
-			for (int i = 0; i < wineResult.size(); i++) {
-				System.out.println(wineResult.get(i));
-			}
-			Antigen[] trainData;
-			Antigen[] testData;
-			trainData = new Antigen[wineData.get(0).size()];
-			testData = new Antigen[wineData.get(1).size()];
-			for (int i = 0; i < wineData.get(0).size(); i++) {
-				trainData[i] = wineData.get(0).get(i);
-			}
-			for (int i = 0; i < wineData.get(1).size(); i++) {
-				testData[i] = wineData.get(1).get(i);
-			}
-			int bestParamIndex = 0;
-			double maxAccuracy = 0;
-			for(int i = 0; i < wineResult.size(); i++){
-				if(wineResult.get(i) > maxAccuracy){
-					maxAccuracy = wineResult.get(i);
-					bestParamIndex = i;
-				}
-			}
-			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
-			Antibody[] Ab = T.train(); // all the work
-
-			int S[][] = new int[3][3];
-			for (int i = 0; i < testData.length; i++) {
-				int o = testData[i].getLabel();
-				int indx = -1;
-				double max = -1;
-				for (int j = 0; j < 3; j++) {
-					double fit = testData[i].affinity(Ab[j]);
-					if (fit > max) {
-						max = fit;
-						indx = j;
-					}
-				}
-				S[o][indx]++;
-			}
-			double hit = 0.0;
-			for (int i = 0; i < 3; i++) {
-				System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
-			}
-			for (int i = 0; i < 3; i++) {
-				hit += S[i][i];
-			}
-			double accuracy = hit / 36 * 100;
-			System.out.println(accuracy);
+		ArrayList<ArrayList<Antigen>> wineData = prepareWine();
+		ArrayList<Double> wineResult = new ArrayList<Double>();
+		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
+		Object[] temp;
+		temp = new Object[] { 400, 10, 3, 3, 10, 0.01, 13, 600, 1 };
+		argsHolder.add(temp);
+		temp = new Object[] { 600, 25, 3, 3, 8, 0.01, 13, 400, 2 };
+		argsHolder.add(temp);
+		wineResult.add(wine(wineData.get(0), argsHolder.get(0)));
+		wineResult.add(wine(wineData.get(0), argsHolder.get(1)));
+		for (int i = 0; i < wineResult.size(); i++) {
+			System.out.println(wineResult.get(i));
 		}
-	public static double wine(ArrayList<Antigen> trainSet1, Object[] argsHolder) throws IOException {
+		Antigen[] trainData;
+		Antigen[] testData;
+		trainData = new Antigen[wineData.get(0).size()];
+		testData = new Antigen[wineData.get(1).size()];
+		for (int i = 0; i < wineData.get(0).size(); i++) {
+			trainData[i] = wineData.get(0).get(i);
+		}
+		for (int i = 0; i < wineData.get(1).size(); i++) {
+			testData[i] = wineData.get(1).get(i);
+		}
+		int bestParamIndex = 0;
+		double maxAccuracy = 0;
+		for (int i = 0; i < wineResult.size(); i++) {
+			if (wineResult.get(i) > maxAccuracy) {
+				maxAccuracy = wineResult.get(i);
+				bestParamIndex = i;
+			}
+		}
+		Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+		Antibody[] Ab = T.train(); // all the work
+
+		int S[][] = new int[3][3];
+		for (int i = 0; i < testData.length; i++) {
+			int o = testData[i].getLabel();
+			int indx = -1;
+			double max = -1;
+			for (int j = 0; j < 3; j++) {
+				double fit = testData[i].affinity(Ab[j]);
+				if (fit > max) {
+					max = fit;
+					indx = j;
+				}
+			}
+			S[o][indx]++;
+		}
+		double hit = 0.0;
+		for (int i = 0; i < 3; i++) {
+			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
+		}
+		for (int i = 0; i < 3; i++) {
+			hit += S[i][i];
+		}
+		double accuracy = hit / 36 * 100;
+		System.out.println(accuracy);
+	}
+
+	public static double wine(ArrayList<Antigen> trainSet1, Object[] argsHolder)
+			throws IOException {
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -274,7 +278,7 @@ public class Trainer {
 
 	public static ArrayList<ArrayList<Antigen>> prepareLiverDisorder()
 			throws IOException {
-				String fileName = "bupa.data.txtProcessed";
+		String fileName = "bupa.data.txtProcessed";
 		Scanner scanner = new Scanner(Paths.get(fileName));
 		// 39 in testset
 		Antigen[] Ag = new Antigen[345];
@@ -306,7 +310,9 @@ public class Trainer {
 		return ans;
 
 	}
-	public static double liverDisorder(ArrayList<Antigen> trainSet1, Object[] argsHolder) throws IOException {
+
+	public static double liverDisorder(ArrayList<Antigen> trainSet1,
+			Object[] argsHolder) throws IOException {
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -354,48 +360,100 @@ public class Trainer {
 		return averageAccuracy / 10;
 
 	}
+
 	public static void runliverDisorder() throws IOException {
 		// train - 276, test - 69
-			ArrayList<ArrayList<Antigen>> liverDisorderData = prepareLiverDisorder();
-			ArrayList<Double> liverDisorderResult = new ArrayList<Double>();
-			ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
-			Object[] temp;
-			temp = new Object[] { 600, 20, 2, 5, 20, 0.01, 6, 500, 1};
-			argsHolder.add(temp);
-			temp = new Object[] { 400, 20, 2, 5, 20, 0.01, 6, 300, 2};
-			argsHolder.add(temp);
-			liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(0)));
-			liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(1) ));
-			for (int i = 0; i < liverDisorderResult.size(); i++) {
-				System.out.println(liverDisorderResult.get(i));
+		ArrayList<ArrayList<Antigen>> liverDisorderData = prepareLiverDisorder();
+		ArrayList<Double> liverDisorderResult = new ArrayList<Double>();
+		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
+		Object[] temp;
+		temp = new Object[] { 600, 15, 2, 5, 10, 0.01, 6, 500, 1 };
+		argsHolder.add(temp);
+		temp = new Object[] { 400, 20, 2, 5, 12, 0.01, 6, 300, 2 };
+		argsHolder.add(temp);
+		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0),
+				argsHolder.get(0)));
+		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0),
+				argsHolder.get(1)));
+		for (int i = 0; i < liverDisorderResult.size(); i++) {
+			System.out.println(liverDisorderResult.get(i));
+		}
+		Antigen[] trainData;
+		Antigen[] testData;
+		trainData = new Antigen[liverDisorderData.get(0).size()];
+		testData = new Antigen[liverDisorderData.get(1).size()];
+		for (int i = 0; i < liverDisorderData.get(0).size(); i++) {
+			trainData[i] = liverDisorderData.get(0).get(i);
+		}
+		for (int i = 0; i < liverDisorderData.get(1).size(); i++) {
+			testData[i] = liverDisorderData.get(1).get(i);
+		}
+		int bestParamIndex = 0;
+		double maxAccuracy = 0;
+		for (int i = 0; i < liverDisorderResult.size(); i++) {
+			if (liverDisorderResult.get(i) > maxAccuracy) {
+				maxAccuracy = liverDisorderResult.get(i);
+				bestParamIndex = i;
 			}
-			Antigen[] trainData;
-			Antigen[] testData;
-			trainData = new Antigen[liverDisorderData.get(0).size()];
-			testData = new Antigen[liverDisorderData.get(1).size()];
-			for (int i = 0; i < liverDisorderData.get(0).size(); i++) {
-				trainData[i] = liverDisorderData.get(0).get(i);
-			}
-			for (int i = 0; i < liverDisorderData.get(1).size(); i++) {
-				testData[i] = liverDisorderData.get(1).get(i);
-			}
-			int bestParamIndex = 0;
-			double maxAccuracy = 0;
-			for(int i = 0; i < liverDisorderResult.size(); i++){
-				if(liverDisorderResult.get(i) > maxAccuracy){
-					maxAccuracy = liverDisorderResult.get(i);
-					bestParamIndex = i;
+		}
+		Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+		Antibody[] Ab = T.train(); // all the work
+
+		int S[][] = new int[2][2];
+		for (int i = 0; i < testData.length; i++) {
+			int o = testData[i].getLabel();
+			int indx = -1;
+			double max = -1;
+			for (int j = 0; j < 2; j++) {
+				double fit = testData[i].affinity(Ab[j]);
+				if (fit > max) {
+					max = fit;
+					indx = j;
 				}
 			}
-			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+			S[o][indx]++;
+		}
+		double hit = 0.0;
+		for (int i = 0; i < 2; i++) {
+			System.out.println(S[i][0] + " " + S[i][1]);
+		}
+		for (int i = 0; i < 2; i++) {
+			hit += S[i][i];
+		}
+		double accuracy = hit / 69 * 100;
+		System.out.println(accuracy);
+	}
+
+	public static double ecoli(ArrayList<Antigen> trainSet1, Object[] argsHolder)
+			throws IOException {
+		double averageAccuracy = 0.0;
+		for (int k = 0; k < 10; k++) {
+			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
+			ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+			for (int i = 0; i < 27; i++) {
+				int index = new Random().nextInt(trainSet.size());
+				testSet.add(trainSet.get(index));
+				trainSet.remove(index);
+			}
+			System.out.println("trainSet " + trainSet.size() + " testSet "
+					+ testSet.size());
+			Antigen[] trainData = new Antigen[242];
+			for (int i = 0; i < trainData.length; i++) {
+				trainData[i] = trainSet.get(i);
+			}
+			Antigen[] testData = new Antigen[27];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = testSet.get(i);
+			}
+			Trainer T = new Trainer(trainData, argsHolder);
 			Antibody[] Ab = T.train(); // all the work
 
-			int S[][] = new int[2][2];
+			int S[][] = new int[8][8];
 			for (int i = 0; i < testData.length; i++) {
 				int o = testData[i].getLabel();
 				int indx = -1;
 				double max = -1;
-				for (int j = 0; j < 2; j++) {
+				for (int j = 0; j < 7; j++) {
 					double fit = testData[i].affinity(Ab[j]);
 					if (fit > max) {
 						max = fit;
@@ -405,225 +463,194 @@ public class Trainer {
 				S[o][indx]++;
 			}
 			double hit = 0.0;
-			for (int i = 0; i < 2; i++) {
-				System.out.println(S[i][0] + " " + S[i][1]);
-			}
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 8; i++) {
 				hit += S[i][i];
 			}
-			double accuracy = hit / 69 * 100;
-			System.out.println(accuracy);
+			double accuracy = hit / 27 * 100;
+			averageAccuracy += accuracy;
+
 		}
-	//	public static double liverDisorder() throws IOException {
-//		String fileName = "bupa.data.txtProcessed";
-//		Scanner scanner = new Scanner(Paths.get(fileName));
-//		// 39 in testset
-//		Antigen[] Ag = new Antigen[345];
-//		for (int i = 0; i < Ag.length; i++) {
-//			String str = scanner.nextLine();
-//			String[] temp = str.split(",");
-//			double X[] = new double[6];
-//			for (int k = 0; k < temp.length - 1; k++)
-//				X[k] = new Double(temp[k]);
-//			int D[] = new int[6]; // D has vals in mm
-//			for (int k = 0; k < X.length; k++)
-//				D[k] = (int) (X[k]); // change cm to mm so int
-//			Ag[i] = new Antigen(new Integer(temp[6]) - 1, D, 6);
-//		}
-//		scanner.close();
-//		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < Ag.length; i++) {
-//			trainSet.add(Ag[i]);
-//		}
-//		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < 39; i++) {
-//			int index = new Random().nextInt(trainSet.size());
-//			testSet.add(trainSet.get(index));
-//			trainSet.remove(index);
-//
-//		}
-//		Antigen[] testData = new Antigen[39];
-//		for (int i = 0; i < 39; i++) {
-//			testData[i] = testSet.get(i);
-//		}
-//		Antigen[] trainData = new Antigen[306];
-//		for (int i = 0; i < 306; i++) {
-//			trainData[i] = trainSet.get(i);
-//		}
-//		Trainer T = new Trainer(trainData, 600, 20, 2, 5, 20, 0.01, 6, 500, 1);
-//
-//		Antibody[] Ab = T.train(); // all the work
-//
-//		int S[][] = new int[2][2];
-//		for (int i = 0; i < testData.length; i++) {
-//			int o = testData[i].getLabel();
-//
-//			int indx = -1;
-//			double max = -1;
-//			for (int j = 0; j < 2; j++) {
-//				double fit = testData[i].affinity(Ab[j]);
-//				if (fit > max) {
-//					max = fit;
-//					indx = j;
-//				}
-//			}
-//			S[o][indx]++;
-//		}
-//		// for(int i=0;i<2;i++)
-//		// System.out.println(S[i][0]+" "+S[i][1]);
-//		double hit = 0.0;
-//		for (int i = 0; i < 2; i++) {
-//			hit += S[i][i];
-//		}
-//		return (hit / 39 * 100);
-//	}
-//
-//	public static double ecoli() throws IOException {
-//		Hashtable<String, Integer> classifier = new Hashtable();
-//		classifier.put("cp", new Integer(0));
-//		classifier.put("im", new Integer(1));
-//		classifier.put("pp", new Integer(2));
-//		classifier.put("imU", new Integer(3));
-//		classifier.put("om", new Integer(4));
-//		classifier.put("omL", new Integer(5));
-//		classifier.put("imL", new Integer(6));
-//		classifier.put("imS", new Integer(7));
-//		String fileName = "ecoli.data.txt.removed";
-//		Scanner scanner = new Scanner(Paths.get(fileName));
-//		Antigen[] Ag = new Antigen[336];
-//		// 39 in test set
-//		for (int i = 0; i < Ag.length; i++) {
-//			String str = scanner.nextLine();
-//			String[] temp = str.split("\\s+");
-//			double X[] = new double[7];
-//			for (int k = 0; k < temp.length - 1; k++)
-//				X[k] = new Double(temp[k]);
-//			int D[] = new int[7]; // D has vals in mm
-//			for (int k = 0; k < X.length; k++)
-//				D[k] = (int) (100 * X[k]); // change cm to mm so int
-//			Ag[i] = new Antigen(classifier.get(temp[7]), D, 7);
-//		}
-//		scanner.close();
-//		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < Ag.length; i++) {
-//			trainSet.add(Ag[i]);
-//		}
-//		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < 39; i++) {
-//			int index = new Random().nextInt(trainSet.size());
-//			testSet.add(trainSet.get(index));
-//			trainSet.remove(index);
-//
-//		}
-//		Antigen[] testData = new Antigen[39];
-//		for (int i = 0; i < 39; i++) {
-//			testData[i] = testSet.get(i);
-//		}
-//		Antigen[] trainData = new Antigen[297];
-//		for (int i = 0; i < 297; i++) {
-//			trainData[i] = trainSet.get(i);
-//		}
-//		Trainer T = new Trainer(trainData, 600, 12, 7, 3, 1, 0.01, 7, 40, 1);
-//
-//		Antibody[] Ab = T.train(); // all the work
-//		// number of classes
-//		int S[][] = new int[8][8];
-//		for (int i = 0; i < testData.length; i++) {
-//			int o = Ag[i].getLabel();
-//
-//			int indx = -1;
-//			double max = -1;
-//			// size of antigen
-//			for (int j = 0; j < 7; j++) {
-//				double fit = testData[i].affinity(Ab[j]);
-//				if (fit > max) {
-//					max = fit;
-//					indx = j;
-//				}
-//			}
-//			S[o][indx]++;
-//		}
-//		for (int i = 0; i < 1; i++)
-//			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2] + " "
-//					+ S[i][3] + " " + S[i][4] + " " + S[i][5] + " " + S[i][6]
-//					+ " " + S[i][7]);
-//		// System.out.println();
-//		double hit = 0.0;
-//		for (int i = 0; i < 8; i++) {
-//			hit += S[i][i];
-//		}
-//		return (hit / 39 * 100);
-//	}
-//
-//	public static double breastCancer() throws IOException {
-//		String fileName = "breast-cancer-wisconsin.data.txt";
-//		Scanner scanner = new Scanner(Paths.get(fileName));
-//		Antigen[] Ag = new Antigen[683];
-//		// 71 in testset
-//		for (int i = 0; i < Ag.length; i++) {
-//			String str = scanner.nextLine();
-//			String[] temp = str.split(",");
-//			double X[] = new double[9];
-//			for (int k = 0; k < temp.length - 2; k++)
-//				X[k] = new Double(temp[k + 1]);
-//			int D[] = new int[9]; // D has vals in mm
-//			for (int k = 0; k < X.length; k++)
-//				D[k] = (int) (X[k]); // change cm to mm so int
-//			Ag[i] = new Antigen((new Integer(temp[10]) / 2) - 1, D, 9);
-//		}
-//		scanner.close();
-//		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < Ag.length; i++) {
-//			trainSet.add(Ag[i]);
-//		}
-//		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-//		for (int i = 0; i < 71; i++) {
-//			int index = new Random().nextInt(trainSet.size());
-//			testSet.add(trainSet.get(index));
-//			trainSet.remove(index);
-//
-//		}
-//		Antigen[] testData = new Antigen[71];
-//		for (int i = 0; i < 71; i++) {
-//			testData[i] = testSet.get(i);
-//		}
-//		Antigen[] trainData = new Antigen[612];
-//		for (int i = 0; i < 612; i++) {
-//			trainData[i] = trainSet.get(i);
-//		}
-//		Trainer T = new Trainer(trainData, 600, 20, 2, 5, 20, 0.01, 9, 5, 1);
-//
-//		Antibody[] Ab = T.train(); // all the work
-//
-//		int S[][] = new int[2][2];
-//		for (int i = 0; i < testData.length; i++) {
-//			int o = testData[i].getLabel();
-//
-//			int indx = -1;
-//			double max = -1;
-//			for (int j = 0; j < 2; j++) {
-//				double fit = testData[i].affinity(Ab[j]);
-//				if (fit > max) {
-//					max = fit;
-//					indx = j;
-//				}
-//			}
-//			S[o][indx]++;
-//		}
-//		for (int i = 0; i < 2; i++)
-//			System.out.println(S[i][0] + " " + S[i][1]);
-//		double hit = 0.0;
-//		for (int i = 0; i < 2; i++) {
-//			hit += S[i][i];
-//		}
-//		return (hit / 71 * 100);
-//	}
+		return averageAccuracy / 10;
+
+	}
+
+	public static ArrayList<ArrayList<Antigen>> prepareEcoli()
+			throws IOException {
+		Hashtable<String, Integer> classifier = new Hashtable();
+		classifier.put("cp", new Integer(0));
+		classifier.put("im", new Integer(1));
+		classifier.put("pp", new Integer(2));
+		classifier.put("imU", new Integer(3));
+		classifier.put("om", new Integer(4));
+		classifier.put("omL", new Integer(5));
+		classifier.put("imL", new Integer(6));
+		classifier.put("imS", new Integer(7));
+		String fileName = "ecoli.data.txt.removed";
+		Scanner scanner = new Scanner(Paths.get(fileName));
+		Antigen[] Ag = new Antigen[336];
+		// 39 in test set
+		for (int i = 0; i < Ag.length; i++) {
+			String str = scanner.nextLine();
+			String[] temp = str.split("\\s+");
+			double X[] = new double[7];
+			for (int k = 0; k < temp.length - 1; k++)
+				X[k] = new Double(temp[k]);
+			int D[] = new int[7]; // D has vals in mm
+			for (int k = 0; k < X.length; k++)
+				D[k] = (int) (100 * X[k]); // change cm to mm so int
+			Ag[i] = new Antigen(classifier.get(temp[7]), D, 7);
+		}
+		scanner.close();
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		for (int i = 0; i < Ag.length; i++) {
+			trainSet.add(Ag[i]);
+		}
+
+		// final testing
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		for (int i = 0; i < 67; i++) {
+			int index = new Random().nextInt(trainSet.size());
+			testSet.add(trainSet.get(index));
+			trainSet.remove(index);
+		}
+		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
+		ans.add(trainSet);
+		ans.add(testSet);
+		return ans;
+
+	}
+
+	public static void runEcoli() throws IOException {
+		ArrayList<ArrayList<Antigen>> ecoliData = prepareEcoli();
+		ArrayList<Double> ecoliResult = new ArrayList<Double>();
+		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
+		Object[] temp;
+		temp = new Object[] { 400, 12, 7, 3, 1, 0.01, 7, 40, 1 };
+		argsHolder.add(temp);
+		temp = new Object[] { 300, 12, 7, 3, 1, 0.01, 7, 35, 2 };
+		argsHolder.add(temp);
+		ecoliResult.add(ecoli(ecoliData.get(0), argsHolder.get(0)));
+		ecoliResult.add(ecoli(ecoliData.get(0), argsHolder.get(1)));
+		for (int i = 0; i < ecoliResult.size(); i++) {
+			System.out.println(ecoliResult.get(i));
+		}
+		Antigen[] trainData;
+		Antigen[] testData;
+		trainData = new Antigen[ecoliData.get(0).size()];
+		testData = new Antigen[ecoliData.get(1).size()];
+		for (int i = 0; i < ecoliData.get(0).size(); i++) {
+			trainData[i] = ecoliData.get(0).get(i);
+		}
+		for (int i = 0; i < ecoliData.get(1).size(); i++) {
+			testData[i] = ecoliData.get(1).get(i);
+		}
+		int bestParamIndex = 0;
+		double maxAccuracy = 0;
+		for (int i = 0; i < ecoliResult.size(); i++) {
+			if (ecoliResult.get(i) > maxAccuracy) {
+				maxAccuracy = ecoliResult.get(i);
+				bestParamIndex = i;
+			}
+		}
+		Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+		Antibody[] Ab = T.train(); // all the work
+
+		int S[][] = new int[8][8];
+		for (int i = 0; i < testData.length; i++) {
+			int o = testData[i].getLabel();
+			int indx = -1;
+			double max = -1;
+			for (int j = 0; j < 7; j++) {
+				double fit = testData[i].affinity(Ab[j]);
+				if (fit > max) {
+					max = fit;
+					indx = j;
+				}
+			}
+			S[o][indx]++;
+		}
+		double hit = 0.0;
+		for (int i = 0; i < 8; i++) {
+			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2] + " "
+					+ S[i][3] + " " + S[i][4] + " " + S[i][5] + " " + S[i][6]
+					+ " " + S[i][7]);
+		}
+		for (int i = 0; i < 8; i++) {
+			hit += S[i][i];
+		}
+		double accuracy = hit / 67 * 100;
+		System.out.println(accuracy);
+	}
+
+	// public static double breastCancer() throws IOException {
+	// String fileName = "breast-cancer-wisconsin.data.txt";
+	// Scanner scanner = new Scanner(Paths.get(fileName));
+	// Antigen[] Ag = new Antigen[683];
+	// // 71 in testset
+	// for (int i = 0; i < Ag.length; i++) {
+	// String str = scanner.nextLine();
+	// String[] temp = str.split(",");
+	// double X[] = new double[9];
+	// for (int k = 0; k < temp.length - 2; k++)
+	// X[k] = new Double(temp[k + 1]);
+	// int D[] = new int[9]; // D has vals in mm
+	// for (int k = 0; k < X.length; k++)
+	// D[k] = (int) (X[k]); // change cm to mm so int
+	// Ag[i] = new Antigen((new Integer(temp[10]) / 2) - 1, D, 9);
+	// }
+	// scanner.close();
+	// ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+	// for (int i = 0; i < Ag.length; i++) {
+	// trainSet.add(Ag[i]);
+	// }
+	// ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+	// for (int i = 0; i < 71; i++) {
+	// int index = new Random().nextInt(trainSet.size());
+	// testSet.add(trainSet.get(index));
+	// trainSet.remove(index);
+	//
+	// }
+	// Antigen[] testData = new Antigen[71];
+	// for (int i = 0; i < 71; i++) {
+	// testData[i] = testSet.get(i);
+	// }
+	// Antigen[] trainData = new Antigen[612];
+	// for (int i = 0; i < 612; i++) {
+	// trainData[i] = trainSet.get(i);
+	// }
+	// Trainer T = new Trainer(trainData, 600, 20, 2, 5, 20, 0.01, 9, 5, 1);
+	//
+	// Antibody[] Ab = T.train(); // all the work
+	//
+	// int S[][] = new int[2][2];
+	// for (int i = 0; i < testData.length; i++) {
+	// int o = testData[i].getLabel();
+	//
+	// int indx = -1;
+	// double max = -1;
+	// for (int j = 0; j < 2; j++) {
+	// double fit = testData[i].affinity(Ab[j]);
+	// if (fit > max) {
+	// max = fit;
+	// indx = j;
+	// }
+	// }
+	// S[o][indx]++;
+	// }
+	// for (int i = 0; i < 2; i++)
+	// System.out.println(S[i][0] + " " + S[i][1]);
+	// double hit = 0.0;
+	// for (int i = 0; i < 2; i++) {
+	// hit += S[i][i];
+	// }
+	// return (hit / 71 * 100);
+	// }
 
 	public static ArrayList<ArrayList<Antigen>> prepareIris()
 			throws IOException {
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner = new Scanner(Paths.get(fileName));
-		Antigen[] Ag = new Antigen[150];	//numOfAntigen
+		Antigen[] Ag = new Antigen[150]; // numOfAntigen
 		for (int j = 0; j < 150; j++) // assuming each class has equal number of
 										// examples
 		{
@@ -674,12 +701,12 @@ public class Trainer {
 		ArrayList<Double> irisResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] {400, 20, 3, 3, 10, 0.01, 4, 4, 1.0};
+		temp = new Object[] { 400, 20, 3, 3, 10, 0.01, 4, 4, 1.0 };
 		argsHolder.add(temp);
-		temp = new Object[] {500, 20, 3, 4, 15, 0.1, 4, 4, 2.0};
+		temp = new Object[] { 500, 20, 3, 4, 15, 0.1, 4, 4, 2.0 };
 		argsHolder.add(temp);
 		irisResult.add(iris(irisData.get(0), argsHolder.get(0)));
-		irisResult.add(iris(irisData.get(0), argsHolder.get(1) ));
+		irisResult.add(iris(irisData.get(0), argsHolder.get(1)));
 		for (int i = 0; i < irisResult.size(); i++) {
 			System.out.println(irisResult.get(i));
 		}
@@ -695,8 +722,8 @@ public class Trainer {
 		}
 		int bestParamIndex = 0;
 		double maxAccuracy = 0;
-		for(int i = 0; i < irisResult.size(); i++){
-			if(irisResult.get(i) > maxAccuracy){
+		for (int i = 0; i < irisResult.size(); i++) {
+			if (irisResult.get(i) > maxAccuracy) {
 				maxAccuracy = irisResult.get(i);
 				bestParamIndex = i;
 			}
@@ -730,8 +757,10 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
+		//runIris(); 
 		//runWine();
 		runliverDisorder();
+		//runEcoli();
 		// one cheeky detail is that antigen class label starts at 0
 		// for(int j = 0; j < 10; j++){
 		// total = 0;
