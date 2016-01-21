@@ -271,7 +271,150 @@ public class Trainer {
 		return averageAccuracy / 10;
 
 	}
-//	public static double liverDisorder() throws IOException {
+
+	public static ArrayList<ArrayList<Antigen>> prepareLiverDisorder()
+			throws IOException {
+				String fileName = "bupa.data.txtProcessed";
+		Scanner scanner = new Scanner(Paths.get(fileName));
+		// 39 in testset
+		Antigen[] Ag = new Antigen[345];
+		for (int i = 0; i < Ag.length; i++) {
+			String str = scanner.nextLine();
+			String[] temp = str.split(",");
+			double X[] = new double[6];
+			for (int k = 0; k < temp.length - 1; k++)
+				X[k] = new Double(temp[k]);
+			int D[] = new int[6]; // D has vals in mm
+			for (int k = 0; k < X.length; k++)
+				D[k] = (int) (X[k]); // change cm to mm so int
+			Ag[i] = new Antigen(new Integer(temp[6]) - 1, D, 6);
+		}
+		scanner.close();
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		for (int i = 0; i < Ag.length; i++) {
+			trainSet.add(Ag[i]);
+		}
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		for (int i = 0; i < 69; i++) {
+			int index = new Random().nextInt(trainSet.size());
+			testSet.add(trainSet.get(index));
+			trainSet.remove(index);
+		}
+		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
+		ans.add(trainSet);
+		ans.add(testSet);
+		return ans;
+
+	}
+	public static double liverDisorder(ArrayList<Antigen> trainSet1, Object[] argsHolder) throws IOException {
+		double averageAccuracy = 0.0;
+		for (int k = 0; k < 10; k++) {
+			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
+			ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+			for (int i = 0; i < 28; i++) {
+				int index = new Random().nextInt(trainSet.size());
+				testSet.add(trainSet.get(index));
+				trainSet.remove(index);
+			}
+			System.out.println("trainSet " + trainSet.size() + " testSet "
+					+ testSet.size());
+			Antigen[] trainData = new Antigen[248];
+			for (int i = 0; i < trainData.length; i++) {
+				trainData[i] = trainSet.get(i);
+			}
+			Antigen[] testData = new Antigen[28];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = testSet.get(i);
+			}
+			Trainer T = new Trainer(trainData, argsHolder);
+			Antibody[] Ab = T.train(); // all the work
+
+			int S[][] = new int[2][2];
+			for (int i = 0; i < testData.length; i++) {
+				int o = testData[i].getLabel();
+				int indx = -1;
+				double max = -1;
+				for (int j = 0; j < 2; j++) {
+					double fit = testData[i].affinity(Ab[j]);
+					if (fit > max) {
+						max = fit;
+						indx = j;
+					}
+				}
+				S[o][indx]++;
+			}
+			double hit = 0.0;
+			for (int i = 0; i < 2; i++) {
+				hit += S[i][i];
+			}
+			double accuracy = hit / 28 * 100;
+			averageAccuracy += accuracy;
+
+		}
+		return averageAccuracy / 10;
+
+	}
+	public static void runliverDisorder() throws IOException {
+		// train - 276, test - 69
+			ArrayList<ArrayList<Antigen>> liverDisorderData = prepareLiverDisorder();
+			ArrayList<Double> liverDisorderResult = new ArrayList<Double>();
+			ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
+			Object[] temp;
+			temp = new Object[] { 600, 20, 2, 5, 20, 0.01, 6, 500, 1};
+			argsHolder.add(temp);
+			temp = new Object[] { 400, 20, 2, 5, 20, 0.01, 6, 300, 2};
+			argsHolder.add(temp);
+			liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(0)));
+			liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(1) ));
+			for (int i = 0; i < liverDisorderResult.size(); i++) {
+				System.out.println(liverDisorderResult.get(i));
+			}
+			Antigen[] trainData;
+			Antigen[] testData;
+			trainData = new Antigen[liverDisorderData.get(0).size()];
+			testData = new Antigen[liverDisorderData.get(1).size()];
+			for (int i = 0; i < liverDisorderData.get(0).size(); i++) {
+				trainData[i] = liverDisorderData.get(0).get(i);
+			}
+			for (int i = 0; i < liverDisorderData.get(1).size(); i++) {
+				testData[i] = liverDisorderData.get(1).get(i);
+			}
+			int bestParamIndex = 0;
+			double maxAccuracy = 0;
+			for(int i = 0; i < liverDisorderResult.size(); i++){
+				if(liverDisorderResult.get(i) > maxAccuracy){
+					maxAccuracy = liverDisorderResult.get(i);
+					bestParamIndex = i;
+				}
+			}
+			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
+			Antibody[] Ab = T.train(); // all the work
+
+			int S[][] = new int[2][2];
+			for (int i = 0; i < testData.length; i++) {
+				int o = testData[i].getLabel();
+				int indx = -1;
+				double max = -1;
+				for (int j = 0; j < 2; j++) {
+					double fit = testData[i].affinity(Ab[j]);
+					if (fit > max) {
+						max = fit;
+						indx = j;
+					}
+				}
+				S[o][indx]++;
+			}
+			double hit = 0.0;
+			for (int i = 0; i < 2; i++) {
+				System.out.println(S[i][0] + " " + S[i][1]);
+			}
+			for (int i = 0; i < 2; i++) {
+				hit += S[i][i];
+			}
+			double accuracy = hit / 69 * 100;
+			System.out.println(accuracy);
+		}
+	//	public static double liverDisorder() throws IOException {
 //		String fileName = "bupa.data.txtProcessed";
 //		Scanner scanner = new Scanner(Paths.get(fileName));
 //		// 39 in testset
@@ -480,7 +623,7 @@ public class Trainer {
 			throws IOException {
 		String fileName = "bezdekIris.data.txt";
 		Scanner scanner = new Scanner(Paths.get(fileName));
-		Antigen[] Ag = new Antigen[150];
+		Antigen[] Ag = new Antigen[150];	//numOfAntigen
 		for (int j = 0; j < 150; j++) // assuming each class has equal number of
 										// examples
 		{
@@ -587,7 +730,8 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
-		runWine();
+		//runWine();
+		runliverDisorder();
 		// one cheeky detail is that antigen class label starts at 0
 		// for(int j = 0; j < 10; j++){
 		// total = 0;
