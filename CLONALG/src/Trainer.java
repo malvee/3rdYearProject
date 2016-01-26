@@ -152,40 +152,46 @@ public class Trainer {
 
 	public static ArrayList<ArrayList<Antigen>> prepareWine()
 			throws IOException {
-		String fileName = "wine.data.txtProcessed";
-		Scanner scanner = new Scanner(Paths.get(fileName));
-		Antigen[] Ag = new Antigen[178];
-		for (int i = 0; i < Ag.length; i++) {
-			String str = scanner.nextLine();
-			String[] temp = str.split(",");
-			double X[] = new double[13];
-			for (int k = 1; k < temp.length; k++)
-				X[k - 1] = new Double(temp[k]);
-			int D[] = new int[13]; // D has vals in mm
-			for (int k = 0; k < X.length; k++)
-				D[k] = (int) (100 * X[k]); // change cm to mm so int
-			Ag[i] = new Antigen(new Integer(temp[0]) - 1, D, 13);
-		}
-		scanner.close();
 		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
-		for (int i = 0; i < Ag.length; i++) {
-			trainSet.add(Ag[i]);
+		String fileName = "winetrain.txt";
+		Scanner scanner = new Scanner(Paths.get(fileName));
+		while(scanner.hasNext()){
+			String str = scanner.nextLine();
+			if(str.length() != 0){
+				String[] temp = str.split("\\s+");
+				double X[] = new double[13]; 
+				for (int k = 0; k < 13; k++)
+					X[k] = new Double(temp[k+1]);
+				int D[] = new int[13]; 
+				for (int k = 0; k < 13; k++)
+					D[k] = (int) (1000 * X[k]); 
+				trainSet.add( new Antigen( (new Integer(temp[0]) - 1), D, 13));
+			}
 		}
 		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-		for (int i = 0; i < 36; i++) {
-			int index = new Random().nextInt(trainSet.size());
-			testSet.add(trainSet.get(index));
-			trainSet.remove(index);
+		fileName = "winetest.txt";
+		scanner = new Scanner(Paths.get(fileName));
+		while(scanner.hasNext()){
+			String str = scanner.nextLine();
+			if(str.length() != 0){
+				String[] temp = str.split("\\s+");
+				double X[] = new double[13]; 
+				for (int k = 0; k < 13; k++)
+					X[k] = new Double(temp[k+1]);
+				int D[] = new int[13]; 
+				for (int k = 0; k < 13; k++)
+					D[k] = (int) (1000 * X[k]); 
+				testSet.add( new Antigen( (new Integer(temp[0]) - 1), D, 13));
+			}
 		}
+		
 		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
 		ans.add(trainSet);
 		ans.add(testSet);
 		return ans;
-
 	}
 
 	public static void runWine() throws IOException {
-		// train - 142, test - 36
 		ArrayList<ArrayList<Antigen>> wineData = prepareWine();
 		ArrayList<Double> wineResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
@@ -217,56 +223,10 @@ public class Trainer {
 				bestParamIndex = i;
 			}
 		}
-		Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
-		Antibody[] Ab = T.train(); // all the work
-
-		int S[][] = new int[3][3];
-		for (int i = 0; i < testData.length; i++) {
-			int o = testData[i].getLabel();
-			int indx = -1;
-			double max = -1;
-			for (int j = 0; j < 3; j++) {
-				double fit = testData[i].affinity(Ab[j]);
-				if (fit > max) {
-					max = fit;
-					indx = j;
-				}
-			}
-			S[o][indx]++;
-		}
-		double hit = 0.0;
-		for (int i = 0; i < 3; i++) {
-			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
-		}
-		for (int i = 0; i < 3; i++) {
-			hit += S[i][i];
-		}
-		double accuracy = hit / 36 * 100;
-		System.out.println(accuracy);
-	}
-
-	public static double wine(ArrayList<Antigen> trainSet1, Object[] argsHolder)
-			throws IOException {
-		double averageAccuracy = 0.0;
-		for (int k = 0; k < 10; k++) {
-			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
-			ArrayList<Antigen> testSet = new ArrayList<Antigen>();
-			for (int i = 0; i < 14; i++) {
-				int index = new Random().nextInt(trainSet.size());
-				testSet.add(trainSet.get(index));
-				trainSet.remove(index);
-			}
-			System.out.println("trainSet " + trainSet.size() + " testSet "
-					+ testSet.size());
-			Antigen[] trainData = new Antigen[128];
-			for (int i = 0; i < trainData.length; i++) {
-				trainData[i] = trainSet.get(i);
-			}
-			Antigen[] testData = new Antigen[14];
-			for (int i = 0; i < testData.length; i++) {
-				testData[i] = testSet.get(i);
-			}
-			Trainer T = new Trainer(trainData, argsHolder);
+		ArrayList<Double> resultRecorder = new ArrayList<Double>();
+		double total = 0;
+		for(int k = 0; k < 10; k++){
+			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
 
 			int S[][] = new int[3][3];
@@ -285,11 +245,81 @@ public class Trainer {
 			}
 			double hit = 0.0;
 			for (int i = 0; i < 3; i++) {
+				System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
+			}
+			System.out.println();
+			for (int i = 0; i < 3; i++) {
 				hit += S[i][i];
 			}
-			double accuracy = hit / 14 * 100;
-			averageAccuracy += accuracy;
+			double accuracy = hit / testData.length * 100;
+			resultRecorder.add(accuracy);
+		}
+		for(int i = 0; i < 10; i++){
+			total += resultRecorder.get(i);
+			System.out.println(resultRecorder.get(i));
+		}
+		System.out.println("Average accuracy is " + total/10);
+	}
 
+	public static double wine(ArrayList<Antigen> trainSet1, Object[] argsHolder)
+			throws IOException {
+		double averageAccuracy = 0.0;
+		for (int k = 0; k < 10; k++) {
+			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
+			ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+			ArrayList<Antigen>[] group = (ArrayList<Antigen>[])new ArrayList[3];
+			for(int i = 0; i< 3; i++){
+				group[i] = new ArrayList<Antigen>();
+			}
+			for(int i = 0; i < trainSet.size(); i++){
+				group[trainSet.get(i).getLabel()].add(trainSet.get(i));
+			}
+			//populate testSet
+			for(int i = 0; i < 3; i++){
+				int size = group[i].size();
+				for(int j = 0; j < (int) (size * 0.2); j++){
+					int index = new Random().nextInt(group[i].size());
+					testSet.add(group[i].get(index));
+					group[i].remove(index);
+				}
+			}
+			trainSet = new ArrayList<Antigen>();
+			//populate trainSet
+			for(int i = 0; i < 3; i++){
+				for(int j = 0; j < group[i].size(); j++){
+					trainSet.add(group[i].get(j));
+				}
+			}
+			Antigen[] trainData = new Antigen[trainSet.size()];
+			for (int i = 0; i < trainData.length; i++) {
+				trainData[i] = trainSet.get(i);
+			}
+			Antigen[] testData = new Antigen[testSet.size()];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = testSet.get(i);
+			}
+			Trainer T = new Trainer(trainData, argsHolder);
+			Antibody[] Ab = T.train(); // all the work
+			int S[][] = new int[3][3];
+			for (int i = 0; i < testData.length; i++) {
+				int o = testData[i].getLabel();
+				int indx = -1;
+				double max = -1;
+				for (int j = 0; j < 3; j++) {
+					double fit = testData[i].affinity(Ab[j]);
+					if (fit > max) {
+						max = fit;
+						indx = j;
+					}
+				}
+				S[o][indx]++;
+			}
+			double hit = 0.0;
+			for (int i = 0; i < 3; i++) {
+				hit += S[i][i];
+			}
+			double accuracy = hit / testData.length * 100;
+			averageAccuracy += accuracy;
 		}
 		return averageAccuracy / 10;
 
@@ -858,8 +888,8 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
-		runIris(); 
-		//runWine();
+		//runIris(); 
+		runWine();
 		//runliverDisorder();
 		//runEcoli();
 		//runBreastCancer();
