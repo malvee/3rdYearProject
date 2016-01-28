@@ -83,7 +83,7 @@ public class Trainer {
 
 	public static double iris(ArrayList<Antigen> trainSet1, Object[] argsHolder)
 			throws IOException {
-		System.out.println("trainSet1 size is " + trainSet1.size());
+		long start = System.nanoTime();
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -112,8 +112,7 @@ public class Trainer {
 				}
 			}
 
-			System.out.println("trainSet " + trainSet.size() + " testSet "
-					+ testSet.size());
+	
 			Antigen[] trainData = new Antigen[trainSet.size()];
 			for (int i = 0; i < trainData.length; i++) {
 				trainData[i] = trainSet.get(i);
@@ -146,8 +145,9 @@ public class Trainer {
 			averageAccuracy += accuracy;
 
 		}
+		System.out.println("10 runs took " + (System.nanoTime() - start));
 		return averageAccuracy / 10;
-
+		
 	}
 
 	public static ArrayList<ArrayList<Antigen>> prepareWine()
@@ -164,7 +164,7 @@ public class Trainer {
 					X[k] = new Double(temp[k + 1]);
 				int D[] = new int[13];
 				for (int k = 0; k < 13; k++)
-					D[k] = (int) (1000 * X[k]);
+					D[k] = (int) (10000 * X[k]);
 				trainSet.add(new Antigen((new Integer(temp[0]) - 1), D, 13));
 			}
 		}
@@ -180,7 +180,7 @@ public class Trainer {
 					X[k] = new Double(temp[k + 1]);
 				int D[] = new int[13];
 				for (int k = 0; k < 13; k++)
-					D[k] = (int) (1000 * X[k]);
+					D[k] = (int) (10000 * X[k]);
 				testSet.add(new Antigen((new Integer(temp[0]) - 1), D, 13));
 			}
 		}
@@ -192,13 +192,14 @@ public class Trainer {
 	}
 
 	public static void runWine() throws IOException {
+		
 		ArrayList<ArrayList<Antigen>> wineData = prepareWine();
 		ArrayList<Double> wineResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] { 400, 10, 3, 3, 10, 0.01, 13, 600, 1 };
+		temp = new Object[] { 400, 10, 3, 3, 10, 0.01, 13, 6000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] { 600, 25, 3, 3, 8, 0.01, 13, 400, 2 };
+		temp = new Object[] { 400, 30, 3, 10, 10, 0.01, 13, 5000, 3 };
 		argsHolder.add(temp);
 		wineResult.add(wine(wineData.get(0), argsHolder.get(0)));
 		wineResult.add(wine(wineData.get(0), argsHolder.get(1)));
@@ -225,6 +226,7 @@ public class Trainer {
 		}
 		ArrayList<Double> resultRecorder = new ArrayList<Double>();
 		double total = 0;
+		long start = System.nanoTime();
 		for (int k = 0; k < 10; k++) {
 			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
@@ -259,10 +261,12 @@ public class Trainer {
 			System.out.println(resultRecorder.get(i));
 		}
 		System.out.println("Average accuracy is " + total / 10);
+		System.out.println("Wine 10 Time taken " + (System.nanoTime() - start));
 	}
 
 	public static double wine(ArrayList<Antigen> trainSet1, Object[] argsHolder)
 			throws IOException {
+		long start = System.nanoTime();
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -321,6 +325,7 @@ public class Trainer {
 			double accuracy = hit / testData.length * 100;
 			averageAccuracy += accuracy;
 		}
+		System.out.println("wine 10 runs took " + (System.nanoTime() - start));
 		return averageAccuracy / 10;
 
 	}
@@ -368,6 +373,7 @@ public class Trainer {
 
 	public static double liverDisorder(ArrayList<Antigen> trainSet1, Object[] argsHolder)
 			throws IOException {
+		long start = System.nanoTime();
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -395,7 +401,6 @@ public class Trainer {
 					trainSet.add(group[i].get(j));
 				}
 			}
-			System.out.println("train " + trainSet.size() + " test " + testSet.size());
 			Antigen[] trainData = new Antigen[trainSet.size()];
 			for (int i = 0; i < trainData.length; i++) {
 				trainData[i] = trainSet.get(i);
@@ -427,18 +432,20 @@ public class Trainer {
 			double accuracy = hit / testData.length * 100;
 			averageAccuracy += accuracy;
 		}
+		System.out.println("liver 10 runs took " + (System.nanoTime() - start));
 		return averageAccuracy / 10;
 
 	}
 
 	public static void runLiverDisorder() throws IOException {
+		
 		ArrayList<ArrayList<Antigen>> liverDisorderData = prepareLiverDisorder();
 		ArrayList<Double> liverDisorderResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
 		temp = new Object[] { 600, 15, 2, 5, 10, 0.01, 6, 1000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] {  400, 20, 2, 5, 12, 0.01, 6, 7000, 2 };
+		temp = new Object[] {  400, 20, 2, 5, 20, 0.11, 6, 7000, 2 };
 		argsHolder.add(temp);
 		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(0)));
 		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(1)));
@@ -465,6 +472,7 @@ public class Trainer {
 		}
 		ArrayList<Double> resultRecorder = new ArrayList<Double>();
 		double total = 0;
+		long start = System.nanoTime();
 		for (int k = 0; k < 10; k++) {
 			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
@@ -499,11 +507,13 @@ public class Trainer {
 			System.out.println(resultRecorder.get(i));
 		}
 		System.out.println("Average accuracy is " + total / 10);
+		System.out.println("Liver disorder Time taken " + (System.nanoTime() - start));
 	}
 
 
 	public static double ecoli(ArrayList<Antigen> trainSet1, Object[] argsHolder)
 			throws IOException {
+		long start = System.nanoTime();
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -562,6 +572,7 @@ public class Trainer {
 			double accuracy = hit / testData.length * 100;
 			averageAccuracy += accuracy;
 		}
+		System.out.println("Ecoli 10 runs took " + (System.nanoTime() - start));
 		return averageAccuracy / 10;
 
 	}
@@ -614,6 +625,7 @@ public class Trainer {
 	}
 
 	public static void runEcoli() throws IOException {
+		
 		ArrayList<ArrayList<Antigen>> ecoliData = prepareEcoli();
 		ArrayList<Double> ecoliResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
@@ -647,6 +659,7 @@ public class Trainer {
 		}
 		ArrayList<Double> resultRecorder = new ArrayList<Double>();
 		double total = 0;
+		long start = System.nanoTime();
 		for (int k = 0; k < 10; k++) {
 			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
@@ -681,10 +694,12 @@ public class Trainer {
 			System.out.println(resultRecorder.get(i));
 		}
 		System.out.println("Average accuracy is " + total / 10);
+		System.out.println("Ecoli Time taken " + (System.nanoTime() - start));
 	}
 	
 	public static double breastCancer(ArrayList<Antigen> trainSet1, Object[] argsHolder)
 			throws IOException {
+		long start = System.nanoTime();
 		double averageAccuracy = 0.0;
 		for (int k = 0; k < 10; k++) {
 			ArrayList<Antigen> trainSet = new ArrayList<Antigen>(trainSet1);
@@ -713,7 +728,7 @@ public class Trainer {
 				}
 			}
 			
-			System.out.println("trainset " + trainSet.size() + " testset " + testSet.size());
+
 			
 			Antigen[] trainData = new Antigen[trainSet.size()];
 			for (int i = 0; i < trainData.length; i++) {
@@ -746,6 +761,7 @@ public class Trainer {
 			double accuracy = hit / testData.length * 100;
 			averageAccuracy += accuracy;
 		}
+		System.out.println(" breast 10 runs took " + (System.nanoTime() - start));
 		return averageAccuracy / 10;
 
 	}
@@ -794,13 +810,14 @@ public class Trainer {
 	}
 
 	public static void runBreastCancer() throws IOException {
+		
 		ArrayList<ArrayList<Antigen>> breastCancerData = prepareBreastCancer();
 		ArrayList<Double> breastCancerResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
 		temp = new Object[] {  300, 10, 2, 5, 10, 0.01, 9, 5000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] { 400, 10, 2, 3, 10, 0.01, 9, 5000, 2 };
+		temp = new Object[] { 400, 10, 2, 3, 10, 0.1, 9, 5000, 2 };
 		argsHolder.add(temp);
 		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(0)));
 		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(1)));
@@ -827,6 +844,7 @@ public class Trainer {
 		}
 		ArrayList<Double> resultRecorder = new ArrayList<Double>();
 		double total = 0;
+		long start = System.nanoTime();
 		for (int k = 0; k < 10; k++) {
 			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
@@ -861,6 +879,7 @@ public class Trainer {
 			System.out.println(resultRecorder.get(i));
 		}
 		System.out.println("Average accuracy is " + total / 10);
+		System.out.println("Breast Cancer 10 Time taken " + (System.nanoTime() - start));
 	}
 
 	public static ArrayList<ArrayList<Antigen>> prepareIris()
@@ -899,8 +918,7 @@ public class Trainer {
 		}
 
 		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
-		System.out.println("inside prepare train " + trainSet.size() + " test "
-				+ testSet.size());
+		
 		ans.add(trainSet);
 		ans.add(testSet);
 		return ans;
@@ -908,13 +926,14 @@ public class Trainer {
 	}
 
 	public static void runIris() throws IOException {
+		
 		ArrayList<ArrayList<Antigen>> irisData = prepareIris();
 		ArrayList<Double> irisResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] { 400, 20, 3, 3, 10, 0.01, 4, 4, 1.0 };
+		temp = new Object[] { 300, 10, 3, 3, 10, 0.01, 4, 400, 5.0 };
 		argsHolder.add(temp);
-		temp = new Object[] { 500, 20, 3, 4, 15, 0.1, 4, 4, 2.0 };
+		temp = new Object[] { 600, 10, 3, 3, 10, 0.01, 4, 400, 1.0 };
 		argsHolder.add(temp);
 		irisResult.add(iris(irisData.get(0), argsHolder.get(0)));
 		irisResult.add(iris(irisData.get(0), argsHolder.get(1)));
@@ -941,6 +960,7 @@ public class Trainer {
 		}
 		ArrayList<Double> resultRecorder = new ArrayList<Double>();
 		double total = 0;
+		long start = System.nanoTime();
 		for (int k = 0; k < 10; k++) {
 			Trainer T = new Trainer(trainData, argsHolder.get(bestParamIndex));
 			Antibody[] Ab = T.train(); // all the work
@@ -975,59 +995,14 @@ public class Trainer {
 			System.out.println(resultRecorder.get(i));
 		}
 		System.out.println("Average accuracy is " + total / 10);
+		System.out.println("Iris 10 Time taken " + ( System.nanoTime() - start));
 	}
 
 	public static void main(String... args) throws IOException {
-		// runIris();
-		// runWine();
-		runLiverDisorder();
+		 runIris();
+		//runWine();
+		//runLiverDisorder();
 		 //runEcoli();
 		 //runBreastCancer();
-		// one cheeky detail is that antigen class label starts at 0
-		// for(int j = 0; j < 10; j++){
-		// total = 0;
-		// for(int i = 0; i < 10; i++){
-		// total += iris();
-		// }
-		// System.out.println("Iris accuracy is " + total/10);
-		// }
-		//
-
-		// for(int j = 0; j < 10; j++){
-		// total = 0;
-		// for(int i = 0; i < 10; i++){
-		// total += wine();
-		// }
-		// System.out.println("wine accuracy is " + total/10);
-		// }
-
-		// for(int j = 0; j < 10; j++){
-		// total = 0;
-		// for(int i = 0; i < 10; i++){
-		// total += liverDisorder();
-		// }
-		// System.out.println("liverDisorder accuracy is " + total/10);
-		// }
-
-		// for(int j = 0; j < 10; j++){
-		// long start = System.nanoTime();
-		// total = 0;
-		// for(int i = 0; i < 10; i++){
-		// double temp = ecoli();
-		// //System.out.println(temp);
-		// total += temp;
-		// }
-		// System.out.println("ecoli accuracy is " + total/10);
-		// System.out.println("Time taken " + (System.nanoTime() - start));
-		// }
-
-		// for(int j = 0; j < 10; j++){
-		// total = 0;
-		// for(int i = 0; i < 10; i++){
-		// total += breastCancer();
-		// }
-		// System.out.println("breast cancer accuracy is " + total/10);
-		// }
-
 	}
 }
