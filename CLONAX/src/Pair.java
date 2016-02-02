@@ -13,6 +13,10 @@ public class Pair implements Cloneable {
 		this.Af = Af;
 		this.index = index;
 	}
+	public Pair(Double aff, int index){
+		this.Af = aff;
+		this.index = index;
+	}
 
 	public Pair clone() {
 		return new Pair(Ab.clone(), Af);

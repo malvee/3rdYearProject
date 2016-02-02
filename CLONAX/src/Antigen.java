@@ -20,7 +20,9 @@ public class Antigen {
 	public int getLabel() {
 		return L;
 	}
-
+	public int returnComponent(int x){
+		return D[x];
+	}
 	public String toString() {
 		String temp = "";
 		for (int i = 0; i < size; i++) {

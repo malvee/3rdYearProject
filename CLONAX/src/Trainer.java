@@ -1,9 +1,10 @@
-import java.awt.geom.AffineTransform;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
-
+import java.util.Scanner;
 class Comp2 implements Comparator<Pair> {
 	@Override
 	public int compare(Pair o1, Pair o2) {
@@ -54,10 +55,14 @@ public class Trainer {
 	
 	public ArrayList<Antibody>[] train(){
 		ArrayList<Antigen>[] AgSegmentedByClass = (ArrayList<Antigen>[]) new ArrayList[numOfClasses];
+		for(int i = 0; i < numOfClasses; i++){
+			AgSegmentedByClass[i] = new ArrayList<Antigen>();
+		}
 		for(int i = 0; i < Ag.length; i++){
 			AgSegmentedByClass[Ag[i].getLabel()].add(Ag[i]);
 		}
 		for(int G = 0; G < Ngen; G++){
+			System.out.println("In generation " + G);
 			permuteAg();
 			for(int i = 0; i < Ag.length; i++){
 				int label = Ag[i].getLabel();
@@ -66,25 +71,29 @@ public class Trainer {
 				for(x = 0; x < Ab[label].size(); x++){
 					temp[x] =  Ab[label].get(x);
 				}
-				for(; x < (N-M); x++){
-					temp[x] = Ab[numOfClasses].get(x);
+				int hold = x;
+				for(; x < (N-M) + hold; x++){
+					temp[x] = Ab[numOfClasses].get(x-hold);
 				}
 				Antibody[] R = new List(temp, Ag[i], n, p, clonalfactor, N, k).doWork(); // do all the work
-				
+			
 				//selectFromOtherClass contains 1 Ag from each other class
 				Antigen[] selectFromOtherClass = new Antigen[numOfClasses-1];
-				for(int j = 0; j < numOfClasses-1; j++){
+				int u = 0;
+				for(int j = 0; j < numOfClasses; j++){
 					if (j == Ag[i].getLabel()){
-						j--;
 						continue;
 					}
-					selectFromOtherClass[j] = AgSegmentedByClass[j].get(new Random().nextInt(AgSegmentedByClass[j].size())); 	
+					selectFromOtherClass[u++] = AgSegmentedByClass[j].get(new Random().nextInt(AgSegmentedByClass[j].size())); 	
 				}
+				
+				
+				
 				//calculate avg affinity
 				Pair[] avgAffinity = new Pair[k];
 				for(int j =0; j < k; j++){
 					double sum = 0;
-					for(int l = 0; l < 4; l++){
+					for(int l = 0; l < 4; l++){		// 4 is hard coded here
 						sum += AgSegmentedByClass[Ag[i].getLabel()].get(new Random().nextInt(AgSegmentedByClass[Ag[i].getLabel()].size())).affinity(R[j]);
 					}
 					avgAffinity[j] = new Pair(R[j], sum/4); 
@@ -111,17 +120,18 @@ public class Trainer {
 						remaining.add(helper[j].p);
 					}
 				}
+			
 				Pair[] remainingData = new Pair[remaining.size()];
 				for(int j = 0; j< remainingData.length; j++){
 					remainingData[j] = remaining.get(j);
 				}
 				Arrays.sort(remainingData, new Comp2());
 				
-				Pair[] currrentMemoryPool = new Pair[Ab[Ag[i].getLabel()].size()];
+				Pair[] currrentMemoryPool = new Pair[ Ab[Ag[i].getLabel()].size() ];
 				for(int j = 0 ; j < Ab[Ag[i].getLabel()].size(); j++){
-					currrentMemoryPool[j].Ab = Ab[Ag[i].getLabel()].get(j);
-					currrentMemoryPool[j].Af = Ag[i].affinity(Ab[Ag[i].getLabel()].get(j));
+					currrentMemoryPool[j] = new Pair(Ab[Ag[i].getLabel()].get(j), Ag[i].affinity(Ab[Ag[i].getLabel()].get(j)) );
 				}
+			
 				//decide whether to replace lowest
 				int indexOfLowest = 0;
 				double min = 999999999;
@@ -131,10 +141,12 @@ public class Trainer {
 						min = currrentMemoryPool[j].Af;
 					}
 				}
+				
 				if(currrentMemoryPool[indexOfLowest].Af < remainingData[0].Af){
 					Ab[Ag[i].getLabel()].set(indexOfLowest, remainingData[0].Ab);
 				}
-				Pair[] lowestD = new Pair[d];
+				
+				Pair[] lowestD = new Pair[Ab[numOfClasses].size()];
 				for(int j = 0; j < Ab[numOfClasses].size(); j++){
 					lowestD[j] = new Pair(Ab[numOfClasses].get(j), Ag[i].affinity(Ab[numOfClasses].get(j)), j) ;
 				}
@@ -159,12 +171,106 @@ public class Trainer {
 	
 	
 	
-	
-	
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static ArrayList<ArrayList<Antigen>> prepareIris()
+			throws IOException {
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		String fileName = "bezdekIrisTrainData.txt";
+		Scanner scanner = new Scanner(Paths.get(fileName));
+		while (scanner.hasNext()) {
+			String str = scanner.nextLine();
+			if (str.length() != 0) {
+				String[] temp = str.split("\\s+");
+				double X[] = new double[4];
+				for (int k = 0; k < 4; k++)
+					X[k] = new Double(temp[k + 1]);
+				int D[] = new int[4];
+				for (int k = 0; k < 4; k++)
+					D[k] = (int) (1000 * X[k]);
+				trainSet.add(new Antigen((new Integer(temp[0]) - 1), D, 4));
+			}
+		}
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		fileName = "bezdekIrisTestData.txt";
+		scanner = new Scanner(Paths.get(fileName));
+		while (scanner.hasNext()) {
+			String str = scanner.nextLine();
+			if (str.length() != 0) {
+				String[] temp = str.split("\\s+");
+				double X[] = new double[4];
+				for (int k = 0; k < 4; k++)
+					X[k] = new Double(temp[k + 1]);
+				int D[] = new int[4];
+				for (int k = 0; k < 4; k++)
+					D[k] = (int) (1000 * X[k]);
+				testSet.add(new Antigen((new Integer(temp[0]) - 1), D, 4));
+			}
+		}
 
+		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
+		
+		ans.add(trainSet);
+		ans.add(testSet);
+		return ans;
+
+	}
+
+	
+	
+	public static void main(String[] args) throws IOException{
+		ArrayList<ArrayList<Antigen>> irisData = prepareIris();
+		Object[] temp;
+		temp = new Object[] { 400, 20,6,7,6,0.01,4, 1.0, 3, 5 };
+		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[4];
+		for(int i = 0; i < 4; i++){
+			Ab[i] = new ArrayList<Antibody>();
+		}
+		for(int i = 0; i < 6; i++){
+			int sum1, sum2, sum3, sum4;
+			sum1 = sum2 = sum3 = sum4 = 0;
+			for(int j = i * 20; j < (i+1)*20; j++){
+				sum1 += irisData.get(0).get(j).returnComponent(0);
+				sum2 += irisData.get(0).get(j).returnComponent(1);
+				sum3 += irisData.get(0).get(j).returnComponent(2);
+				sum4 += irisData.get(0).get(j).returnComponent(3);
+			}
+			if(i == 0 || i ==1){
+				Ab[0].add(new Antibody(4, new int[] {sum1/20, sum2/20, sum3/20, sum4/20}));
+			}
+			else if(i == 2 || i ==3){
+				Ab[1].add(new Antibody(4, new int[] {sum1/20, sum2/20, sum3/20, sum4/20}));
+			}
+			else{
+				Ab[2].add(new Antibody(4, new int[] {sum1/20, sum2/20, sum3/20, sum4/20}));
+			}
+			
+		}
+		for(int i = 0; i < 14 ; i++){
+			Ab[3].add(new Antibody(4, new int[] {new Random().nextInt(400), new Random().nextInt(400), new Random().nextInt(400), new Random().nextInt(400)}));
+		}
+		
+		Antigen[] passData = new Antigen[irisData.get(0).size()];
+		for(int i = 0; i < irisData.get(0).size(); i++){
+			passData[i] = irisData.get(0).get(i);
+		}
+		Trainer x = new Trainer(Ab,passData, temp);
+		ArrayList<Antibody>[] trainedAb = (ArrayList<Antibody>[]) new ArrayList[3];
+		trainedAb =  x.train();
+		int[][] S = new int[3][3];
+		for(int i = 0; i < irisData.get(1).size(); i++){
+			Antigen focus = irisData.get(1).get(i);
+			Pair[] var = new Pair[6];
+			var[0] = new Pair(focus.affinity(trainedAb[0].get(0)) , 0);
+			var[1] = new Pair(focus.affinity(trainedAb[0].get(1)) , 0);
+			var[2] = new Pair(focus.affinity(trainedAb[1].get(0)) , 1);
+			var[3] = new Pair(focus.affinity(trainedAb[1].get(1)) , 1);
+			var[4] = new Pair(focus.affinity(trainedAb[2].get(0)) , 2);
+			var[5] = new Pair(focus.affinity(trainedAb[2].get(1)) , 2);
+			Arrays.sort(var, new Comp2());
+			S[var[0].index][focus.getLabel()] += 1;
+		}
+		for(int i = 0; i < 3; i++){
+			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
+		}
 	}
 
 }
