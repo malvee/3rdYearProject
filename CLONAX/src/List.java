@@ -35,8 +35,24 @@ public class List {
 	}
 	private void pickN() {
 		Pair[] nList = new Pair[n];
-		for (int i = 0; i < n; i++)
+		//create median cell and compare
+		for (int i = 0; i < n; i++){
 			nList[i] = list[i];
+		}	
+		int[] medianContent = new int[nList[0].Ab.size];
+		for(int i = 0; i<nList[0].Ab.size ; i++){
+			int[] valueHolders = new int[n];
+			for(int j = 0; j < n; j++){
+				valueHolders[j] = nList[j].Ab.D[i];
+			}
+			medianContent[i] = valueHolders[(int)n/2];
+		}
+		Antibody medianCell = new Antibody(nList[0].Ab.size, medianContent);
+		if(Ag.affinity(medianCell) > nList[0].Af){
+			nList[0] = new Pair(medianCell, Ag.affinity(medianCell));
+			System.out.println("Median cell reached");
+		}
+			
 		list = nList;
 	}
 	private void propotionalClone() {
