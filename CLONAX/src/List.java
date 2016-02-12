@@ -38,21 +38,32 @@ public class List {
 		//create median cell and compare
 		for (int i = 0; i < n; i++){
 			nList[i] = list[i];
-		}	
+		}
+		int[] avgContents = new int[nList[0].Ab.size];
 		int[] medianContent = new int[nList[0].Ab.size];
 		for(int i = 0; i<nList[0].Ab.size ; i++){
+			int sum = 0;
 			int[] valueHolders = new int[n];
 			for(int j = 0; j < n; j++){
+				sum += nList[j].Ab.D[i];
 				valueHolders[j] = nList[j].Ab.D[i];
 			}
+			Arrays.sort(valueHolders);
+			avgContents[i] = sum/n;
 			medianContent[i] = valueHolders[(int)n/2];
 		}
 		Antibody medianCell = new Antibody(nList[0].Ab.size, medianContent);
-		if(Ag.affinity(medianCell) > nList[0].Af){
-			nList[0] = new Pair(medianCell, Ag.affinity(medianCell));
-			System.out.println("Median cell reached");
-		}
-			
+		Antibody avgCell = new Antibody(nList[0].Ab.size, avgContents);
+		Pair[] temp = new Pair[4];
+		temp[0] = nList[0];
+		temp[1] = nList[1];
+		temp[2] = new Pair(medianCell, Ag.affinity(medianCell));
+		temp[3] = new Pair(avgCell, Ag.affinity(avgCell));
+		Arrays.sort(temp, new Comp());
+		nList[0] = temp[0];
+		nList[1] = temp[1];
+		if(nList[0].Af == temp[3].Af || nList[1].Af == temp[3].Af)
+			System.out.println("Avg in place");
 		list = nList;
 	}
 	private void propotionalClone() {

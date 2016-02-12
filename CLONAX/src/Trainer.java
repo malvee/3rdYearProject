@@ -121,7 +121,10 @@ public class Trainer {
 						remaining.add(helper[j].p);
 					}
 				}
-			
+				if(remaining.size() == 0){
+					System.out.println("None of k selected");
+					continue;
+				}
 				Pair[] remainingData = new Pair[remaining.size()];
 				for(int j = 0; j< remainingData.length; j++){
 					remainingData[j] = remaining.get(j);
@@ -215,7 +218,7 @@ public class Trainer {
 
 	}
 
-	public static void runiris() throws IOException{
+	public static double runiris() throws IOException{
 		ArrayList<ArrayList<Antigen>> irisData = prepareIris();
 		Object[] temp;
 		temp = new Object[] { 400, 20,6,7,6,0.01,4, 1.0, 3, 5 };
@@ -270,6 +273,7 @@ public class Trainer {
 		for(int i = 0; i < 3; i++){
 			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
 		}
+		return( (S[0][0] + S[1][1] + S[2][2])/ (double) irisData.get(1).size()  );
 	}
 
 	public static ArrayList<ArrayList<Antigen>> prepareLiverDisorder()
@@ -412,7 +416,6 @@ public class Trainer {
 			for(int j = 0; j < 3; j++){
 				count += var[j].index;
 			}
-			System.out.println(count + " " + i);
 			if(count >= 2){
 				S[focus.getLabel()][1] += 1;
 			}
@@ -1013,24 +1016,42 @@ public class Trainer {
 	
 	public static void main(String[] args) throws IOException{
 		double sum = 0;
-		//runiris();
-//		for(int i = 0; i < 10; i++)
-//			System.out.println(runWine());
-		sum = 0;
-		for(int i = 0; i < 10; i++){
-			double temp = runBreast();
-			sum += temp;
-			System.out.println(temp);
-		}
-		System.out.println("Breast Avg is " + sum/10);
-		
-//		sum = 0;
 //		for(int i = 0; i < 10; i++){
-//			double temp = runEcoli();
+//			double temp = runiris();
 //			sum += temp;
 //			System.out.println(temp);
 //		}
-//		System.out.println("Ecoli Avg is " + sum/10);
+//		System.out.println("iris Avg is " + sum/10);
+//		sum = 0;
+//		for(int i = 0; i < 10; i++){
+//			double temp = runWine();
+//			sum += temp;
+//			System.out.println(temp);
+//		}
+//		System.out.println("wine Avg is " + sum/10);
+//		sum = 0;
+//		for(int i = 0; i < 10; i++){
+//			double temp = runLiver();
+//			sum += temp;
+//			System.out.println(temp);
+//		}
+//		System.out.println("liver Avg is " + sum/10);
+//		
+//		sum = 0;
+//		for(int i = 0; i < 10; i++){
+//			double temp = runBreast();
+//			sum += temp;
+//			System.out.println(temp);
+//		}
+//		System.out.println("Breast Avg is " + sum/10);
+		
+		sum = 0;
+		for(int i = 0; i < 100; i++){
+			double temp = runEcoli();
+			sum += temp;
+			System.out.println(temp);
+		}
+		System.out.println("Ecoli Avg is " + sum/100);
 			
 	}
 
