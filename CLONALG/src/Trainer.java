@@ -1050,10 +1050,10 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
-		 runIris();
+		 //runIris();
 		//runWine();
 		//runLiverDisorder();
 		 //runEcoli();
-		 //runBreastCancer();
+		 runBreastCancer();
 	}
 }
