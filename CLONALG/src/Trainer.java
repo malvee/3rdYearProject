@@ -41,17 +41,23 @@ public class Trainer {
 	}
 
 	public Antibody[] train() {
-
+		Antibody[][] AbSegByClass = new Antibody[M][N-M+1];
+		for(int i = 0; i < M; i++){
+			AbSegByClass[i][0] = Ab[i];
+			for(int j = 1; j < N-M+1; j++){
+				AbSegByClass[i][j] = Ab[M+j-1];
+			}
+		}
 		for (int G = 0; G < Ngen; G++) {
 			permuteAg();
 			for (int i = 0; i < Ag.length; i++) {
-				Result R = new List(Ab, Ag[i], n, d, M, p, clonalfactor, N)
+				Result R = new List(AbSegByClass[Ag[i].L], Ag[i], n, d, M, p, clonalfactor, N)
 						.doWork(); // do all the work
 				Antibody B = R.Ab;
 				int c = Ag[i].getLabel();
-				if (Ag[i].affinity(Ab[c]) < Ag[i].affinity(B)) {
-					Antibody tmp = Ab[c];
-					Ab[c] = B;
+				if (Ag[i].affinity(AbSegByClass[c][0]) < Ag[i].affinity(B)) {
+					Antibody tmp = AbSegByClass[c][0];
+					AbSegByClass[c][0] = B;
 					B = tmp;
 				}
 				// Replace part
@@ -60,15 +66,14 @@ public class Trainer {
 				if (indx.length > 0) // incase some put d = 0
 				{
 					// R.mutatedAb.length might be bigger than Ab.length
-					int looper = ((R.mutatedAb.length - Ab.length) > 0 ? Ab.length
+					int looper = ((R.mutatedAb.length - AbSegByClass[c].length) > 0 ? AbSegByClass[c].length
 							: R.mutatedAb.length);
 					// only fill from index M till possibly end
-					for (int j = M; j < looper; j++) {
-						Ab[j] = R.mutatedAb[j - M];
+					for (int j = 1; j < looper; j++) {
+						AbSegByClass[c][j] = R.mutatedAb[j - 1];
 					}
 					for (int j = 0; j < d; j++)
-
-						Ab[indx[j]] = new Antibody(Ab[0].size, Ab[0].range);
+						AbSegByClass[c][indx[j]] = new Antibody(AbSegByClass[c][0].size, AbSegByClass[c][0].range);
 				}
 
 			}
@@ -76,7 +81,7 @@ public class Trainer {
 
 		Antibody[] rst = new Antibody[M];
 		for (int i = 0; i < M; i++)
-			rst[i] = Ab[i];
+			rst[i] = AbSegByClass[i][0];
 
 		return rst;
 	}
@@ -197,9 +202,9 @@ public class Trainer {
 		ArrayList<Double> wineResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] { 400, 10, 3, 3, 10, 0.01, 13, 6000, 1 };
+		temp = new Object[] { 400, 10, 3, 3, 8, 0.01, 13, 6000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] { 400, 30, 3, 10, 10, 0.01, 13, 5000, 3 };
+		temp = new Object[] { 400, 30, 3, 10, 8, 0.01, 13, 5000, 3 };
 		argsHolder.add(temp);
 		wineResult.add(wine(wineData.get(0), argsHolder.get(0)));
 		wineResult.add(wine(wineData.get(0), argsHolder.get(1)));
@@ -445,7 +450,7 @@ public class Trainer {
 		Object[] temp;
 		temp = new Object[] { 600, 15, 2, 5, 10, 0.01, 6, 1000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] {  400, 20, 2, 5, 20, 0.11, 6, 7000, 2 };
+		temp = new Object[] {  400, 20, 2, 5, 19, 0.11, 6, 7000, 2 };
 		argsHolder.add(temp);
 		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(0)));
 		liverDisorderResult.add(liverDisorder(liverDisorderData.get(0), argsHolder.get(1)));
@@ -771,9 +776,7 @@ public class Trainer {
 		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
 		String fileName = "breastcancertrain.txt";
 		Scanner scanner = new Scanner(Paths.get(fileName));
-		int ki = 0;
 		while (scanner.hasNext()) {
-			System.out.println(ki++);
 			String str = scanner.nextLine();
 			if (str.length() != 0) {
 				String[] temp = str.split("\\s+");
@@ -815,9 +818,9 @@ public class Trainer {
 		ArrayList<Double> breastCancerResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] {  300, 10, 2, 5, 10, 0.01, 9, 5000, 1 };
+		temp = new Object[] {  300, 10, 2, 5, 9, 0.01, 9, 5000, 1 };
 		argsHolder.add(temp);
-		temp = new Object[] { 400, 10, 2, 3, 10, 0.1, 9, 5000, 2 };
+		temp = new Object[] { 400, 10, 2, 3, 9, 0.1, 9, 5000, 2 };
 		argsHolder.add(temp);
 		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(0)));
 		breastCancerResult.add(breastCancer(breastCancerData.get(0), argsHolder.get(1)));
@@ -931,9 +934,9 @@ public class Trainer {
 		ArrayList<Double> irisResult = new ArrayList<Double>();
 		ArrayList<Object[]> argsHolder = new ArrayList<Object[]>();
 		Object[] temp;
-		temp = new Object[] { 300, 10, 3, 3, 10, 0.01, 4, 400, 5.0 };
+		temp = new Object[] { 400, 20, 3, 3, 10, 0.01, 4, 400, 1.0 };
 		argsHolder.add(temp);
-		temp = new Object[] { 600, 10, 3, 3, 10, 0.01, 4, 400, 1.0 };
+		temp = new Object[] { 500, 20, 3, 4, 15, 0.1, 4, 550, 2.0 };
 		argsHolder.add(temp);
 		irisResult.add(iris(irisData.get(0), argsHolder.get(0)));
 		irisResult.add(iris(irisData.get(0), argsHolder.get(1)));
@@ -999,10 +1002,10 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
-		 runIris();
+		 //runIris();
 		//runWine();
 		//runLiverDisorder();
 		 //runEcoli();
-		 //runBreastCancer();
+		 runBreastCancer();
 	}
 }
