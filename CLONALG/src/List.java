@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.*;
 
 class Pair implements Cloneable {
 	final Antibody Ab;
@@ -35,7 +36,7 @@ class Comp implements Comparator<Pair> {
 }
 
 // entry point
-public class List {
+public class List implements Callable<Result>{
 	Pair[] list;
 	final int n;
 	final int d;
@@ -45,7 +46,9 @@ public class List {
 	int[] indxOfLowest;
 	double clonalFactor;
 	int N;
-
+	public Result call() throws Exception {
+        return doWork();
+    }
 	public List(Antibody[] Ab, Antigen Ag, int n, int d, int M, double p,
 			double clonalFactor, int N) {
 		this.n = n;

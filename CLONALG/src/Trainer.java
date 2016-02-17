@@ -1,7 +1,15 @@
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
-
+import java.util.concurrent.*;
+class FutureAndIndex{
+	Future<Result> fut;
+	int i;
+	public FutureAndIndex(Future<Result> fut, int i){
+		this.fut = fut;
+		this.i = i;
+	}
+}
 public class Trainer {
 	final int Ngen;
 	final int N;
@@ -39,8 +47,21 @@ public class Trainer {
 			Ag[j] = tmp;
 		}
 	}
-
+	public int sumAll(int[] x){
+		int sum = 0;
+		for(int i = 0; i< x.length; i++){
+			sum += x[i];
+		}
+		return sum;
+	}
 	public Antibody[] train() {
+		ArrayList<Antigen>[] AgSegmentedByClass = (ArrayList<Antigen>[]) new ArrayList[M];
+		for(int i = 0; i < M; i++){
+			AgSegmentedByClass[i] = new ArrayList<Antigen>();
+		}
+		for(int i = 0; i < Ag.length; i++){
+			AgSegmentedByClass[Ag[i].L].add(Ag[i]);
+		}
 		Antibody[][] AbSegByClass = new Antibody[M][N-M+1];
 		for(int i = 0; i < M; i++){
 			AbSegByClass[i][0] = Ab[i];
@@ -50,33 +71,60 @@ public class Trainer {
 		}
 		for (int G = 0; G < Ngen; G++) {
 			permuteAg();
-			for (int i = 0; i < Ag.length; i++) {
-				Result R = new List(AbSegByClass[Ag[i].L], Ag[i], n, d, M, p, clonalfactor, N)
-						.doWork(); // do all the work
-				Antibody B = R.Ab;
-				int c = Ag[i].getLabel();
-				if (Ag[i].affinity(AbSegByClass[c][0]) < Ag[i].affinity(B)) {
-					Antibody tmp = AbSegByClass[c][0];
-					AbSegByClass[c][0] = B;
-					B = tmp;
-				}
-				// Replace part
-				int indx[] = R.indicies;
-
-				if (indx.length > 0) // incase some put d = 0
-				{
-					// R.mutatedAb.length might be bigger than Ab.length
-					int looper = ((R.mutatedAb.length - AbSegByClass[c].length) > 0 ? AbSegByClass[c].length
-							: R.mutatedAb.length);
-					// only fill from index M till possibly end
-					for (int j = 1; j < looper; j++) {
-						AbSegByClass[c][j] = R.mutatedAb[j - 1];
-					}
-					for (int j = 0; j < d; j++)
-						AbSegByClass[c][indx[j]] = new Antibody(AbSegByClass[c][0].size, AbSegByClass[c][0].range);
-				}
-
+			int[] agLeft = new int[M];
+			for(int i = 0; i < M; i++){
+				agLeft[i] = AgSegmentedByClass[i].size();
 			}
+			int i = 0;
+			ExecutorService executor = Executors.newFixedThreadPool(M);
+			while(true) {
+				if(sumAll(agLeft) == 0)
+					break;
+				ArrayList<FutureAndIndex> listResults = new ArrayList<FutureAndIndex>();
+				for(int j = 0; j < M; j++){
+					if(agLeft[j] > 0){
+						Future<Result> future = executor.submit(new List(AbSegByClass[j], AgSegmentedByClass[j].get(i), n, d, M, p, clonalfactor, N)); 
+						//start the thread,store it somewhere and use the results (replace etc) etc
+						listResults.add(new FutureAndIndex(future, j));
+						agLeft[j] -= 1;
+					}
+				}
+				
+				i++;
+				for(int j =0; j< listResults.size(); j++){
+					try {
+						Result R = listResults.get(j).fut.get();
+						Antibody B = R.Ab;
+						int c = listResults.get(j).i;
+						if (AgSegmentedByClass[c].get(i-1).affinity(AbSegByClass[c][0]) <AgSegmentedByClass[c].get(i-1).affinity(B)) {
+							AbSegByClass[c][0] = B;
+						}
+						
+						int indx[] = R.indicies;
+						if (indx.length > 0) // incase some put d = 0
+						{
+							// R.mutatedAb.length might be bigger than Ab.length
+							int looper = ((R.mutatedAb.length - AbSegByClass[c].length) > 0 ? AbSegByClass[c].length
+									: R.mutatedAb.length);
+							// only fill from index M till possibly end
+							for (int k = 1; k < looper; k++) {
+								AbSegByClass[c][k] = R.mutatedAb[k - 1];
+							}
+							for (int k = 0; k < d; k++)
+								AbSegByClass[c][indx[k]] = new Antibody(AbSegByClass[c][0].size, AbSegByClass[c][0].range);
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}
+			executor.shutdown();
 		}
 
 		Antibody[] rst = new Antibody[M];
@@ -1002,10 +1050,10 @@ public class Trainer {
 	}
 
 	public static void main(String... args) throws IOException {
-		 //runIris();
+		 runIris();
 		//runWine();
 		//runLiverDisorder();
 		 //runEcoli();
-		 runBreastCancer();
+		 //runBreastCancer();
 	}
 }
