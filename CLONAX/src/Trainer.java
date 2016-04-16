@@ -221,7 +221,7 @@ public class Trainer {
 	public static double runiris() throws IOException{
 		ArrayList<ArrayList<Antigen>> irisData = prepareIris();
 		Object[] temp;
-		temp = new Object[] { 400, 20,6,7,6,0.01,4, 1.0, 3, 5 };
+		temp = new Object[] { 1, 20,6,7,6,0.01,4, 1.0, 3, 5 };
 		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[4];
 		for(int i = 0; i < 4; i++){
 			Ab[i] = new ArrayList<Antibody>();
@@ -319,7 +319,7 @@ public class Trainer {
 	public static double runLiver() throws IOException{
 		ArrayList<ArrayList<Antigen>> liverData = prepareLiverDisorder();
 		Object[] temp;
-		temp = new Object[] { 400, 20, 6, 7, 6, 0.02, 6, 1.0, 2, 6};
+		temp = new Object[] { 1, 20, 6, 7, 6, 0.02, 6, 1.0, 2, 6};
 		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[3];
 		for(int i = 0; i < 3; i++){
 			Ab[i] = new ArrayList<Antibody>();
@@ -474,7 +474,7 @@ public class Trainer {
 	public static double runWine() throws IOException{
 		ArrayList<ArrayList<Antigen>> wineData = prepareWine();
 		Object[] temp;
-		temp = new Object[] { 400, 20, 6, 7, 6, 0.02, 13, 1.0, 3, 5};
+		temp = new Object[] { 1, 20, 6, 7, 6, 0.02, 13, 1.0, 3, 5};
 		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[4];
 		for(int i = 0; i < 4; i++){
 			Ab[i] = new ArrayList<Antibody>();
@@ -675,7 +675,7 @@ public class Trainer {
 		
 		ArrayList<ArrayList<Antigen>> breastData = prepareBreastCancer();
 		Object[] temp;
-		temp = new Object[] { 400, 20, 6, 7, 6, 0.02, 9, 1.0, 2, 6};
+		temp = new Object[] { 1, 20, 6, 7, 6, 0.02, 9, 1.0, 2, 6};
 		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[3];
 		for(int i = 0; i < 3; i++){
 			Ab[i] = new ArrayList<Antibody>();
@@ -683,93 +683,93 @@ public class Trainer {
 		int sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9;
 		
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 0; i < 91; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 0; i < 91; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[0].add(new Antibody(9, new int[] {sum1/91, sum2/91,sum3/91,sum4/91,sum5/91,sum6/91, sum7/91, sum8/91, sum9/91}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 91; i < 182; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 91; i < 182; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[0].add(new Antibody(9, new int[] {sum1/91, sum2/91,sum3/91,sum4/91,sum5/91,sum6/91, sum7/91, sum8/91, sum9/91}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 182; i < 273; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 182; i < 273; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[0].add(new Antibody(9, new int[] {sum1/91, sum2/91,sum3/91,sum4/91,sum5/91,sum6/91, sum7/91, sum8/91, sum9/91}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 273; i < 364; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 273; i < 364; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[1].add(new Antibody(9, new int[] {sum1/91, sum2/91,sum3/91,sum4/91,sum5/91,sum6/91, sum7/91, sum8/91, sum9/91}));
 	
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 364; i < 455; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 364; i < 455; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[1].add(new Antibody(9, new int[] {sum1/91, sum2/91,sum3/91,sum4/91,sum5/91,sum6/91, sum7/91, sum8/91, sum9/91}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = sum8 = sum9 = 0;
-		for(int i = 455; i < 547; i++){
-			sum1 += breastData.get(0).get(i).returnComponent(0);
-			sum2 += breastData.get(0).get(i).returnComponent(1);
-			sum3 += breastData.get(0).get(i).returnComponent(2);
-			sum4 += breastData.get(0).get(i).returnComponent(3);
-			sum5 += breastData.get(0).get(i).returnComponent(4);
-			sum6 += breastData.get(0).get(i).returnComponent(5);
-			sum7 += breastData.get(0).get(i).returnComponent(6);
-			sum8 += breastData.get(0).get(i).returnComponent(7);
-			sum9 += breastData.get(0).get(i).returnComponent(8);
-			
-		}
+//		for(int i = 455; i < 547; i++){
+//			sum1 += breastData.get(0).get(i).returnComponent(0);
+//			sum2 += breastData.get(0).get(i).returnComponent(1);
+//			sum3 += breastData.get(0).get(i).returnComponent(2);
+//			sum4 += breastData.get(0).get(i).returnComponent(3);
+//			sum5 += breastData.get(0).get(i).returnComponent(4);
+//			sum6 += breastData.get(0).get(i).returnComponent(5);
+//			sum7 += breastData.get(0).get(i).returnComponent(6);
+//			sum8 += breastData.get(0).get(i).returnComponent(7);
+//			sum9 += breastData.get(0).get(i).returnComponent(8);
+//			
+//		}
 		Ab[1].add(new Antibody(9, new int[] {sum1/92, sum2/92,sum3/92,sum4/92,sum5/92,sum6/92, sum7/92, sum8/92, sum9/92}));
 		for(int i = 0; i < 14; i++){
 			Ab[2].add(new Antibody(9, new int[]{new Random().nextInt(3000), new Random().nextInt(3000), new Random().nextInt(3000),new Random().nextInt(3000),new Random().nextInt(3000),new Random().nextInt(3000),new Random().nextInt(3000),new Random().nextInt(3000),new Random().nextInt(3000)}));
@@ -852,7 +852,7 @@ public class Trainer {
 	public static double runEcoli() throws IOException{
 		ArrayList<ArrayList<Antigen>> ecoliData = prepareEcoli();
 		Object[] temp;
-		temp = new Object[] { 400, 20, 10, 7, 10, 0.02, 7, 1.0, 5, 6};
+		temp = new Object[] { 1, 20, 10, 7, 10, 0.02, 7, 1.0, 5, 6};
 		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[6];
 		for(int i = 0; i < 6; i++){
 			Ab[i] = new ArrayList<Antibody>();
@@ -860,123 +860,123 @@ public class Trainer {
 		int sum1, sum2, sum3, sum4, sum5, sum6, sum7;
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 0; i < 28; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 0; i < 28; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[0].add(new Antibody(7, new int[] {sum1/28, sum2/28,sum3/28,sum4/28,sum5/28,sum6/28, sum7/28}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 28; i < 56; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 28; i < 56; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[0].add(new Antibody(7, new int[] {sum1/28, sum2/28,sum3/28,sum4/28,sum5/28,sum6/28, sum7/28}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 56; i < 84; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 56; i < 84; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[0].add(new Antibody(7, new int[] {sum1/28, sum2/28,sum3/28,sum4/28,sum5/28,sum6/28, sum7/28}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 84; i < 114; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 84; i < 114; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[0].add(new Antibody(7, new int[] {sum1/30, sum2/30,sum3/30,sum4/30,sum5/30,sum6/30, sum7/30}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 114; i < 144; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 114; i < 144; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[1].add(new Antibody(7, new int[] {sum1/30, sum2/30,sum3/30,sum4/30,sum5/30,sum6/30, sum7/30}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 144; i < 175; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 144; i < 175; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[1].add(new Antibody(7, new int[] {sum1/31, sum2/31,sum3/31,sum4/31,sum5/31,sum6/31, sum7/31}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 175; i < 204; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 175; i < 204; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[3].add(new Antibody(7, new int[] {sum1/29, sum2/29,sum3/29,sum4/29,sum5/29,sum6/29, sum7/29}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 204; i < 220; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 204; i < 220; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[4].add(new Antibody(7, new int[] {sum1/16, sum2/16,sum3/16,sum4/16,sum5/16,sum6/16, sum7/16}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 220; i < 240; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 220; i < 240; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[2].add(new Antibody(7, new int[] {sum1/20, sum2/20,sum3/20,sum4/20,sum5/20,sum6/20, sum7/20}));
 		
 		sum1 = sum2 = sum3 = sum4 = sum5= sum6 = sum7 = 0;
-		for(int i = 240; i < 261; i++){
-			sum1 += ecoliData.get(0).get(i).returnComponent(0);
-			sum2 += ecoliData.get(0).get(i).returnComponent(1);
-			sum3 += ecoliData.get(0).get(i).returnComponent(2);
-			sum4 += ecoliData.get(0).get(i).returnComponent(3);
-			sum5 += ecoliData.get(0).get(i).returnComponent(4);
-			sum6 += ecoliData.get(0).get(i).returnComponent(5);
-			sum7 += ecoliData.get(0).get(i).returnComponent(6);
-		}
+//		for(int i = 240; i < 261; i++){
+//			sum1 += ecoliData.get(0).get(i).returnComponent(0);
+//			sum2 += ecoliData.get(0).get(i).returnComponent(1);
+//			sum3 += ecoliData.get(0).get(i).returnComponent(2);
+//			sum4 += ecoliData.get(0).get(i).returnComponent(3);
+//			sum5 += ecoliData.get(0).get(i).returnComponent(4);
+//			sum6 += ecoliData.get(0).get(i).returnComponent(5);
+//			sum7 += ecoliData.get(0).get(i).returnComponent(6);
+//		}
 		Ab[2].add(new Antibody(7, new int[] {sum1/21, sum2/21,sum3/21,sum4/21,sum5/21,sum6/21, sum7/21}));
 		
 		for(int i = 0; i < 10; i++){
@@ -1013,9 +1013,168 @@ public class Trainer {
 		return((S[0][0] + S[1][1] + S[2][2]+ S[3][3]+ S[4][4])/(double)ecoliData.get(1).size());
 		
 	}
+	public static ArrayList<ArrayList<Antigen>> prepareHeart()
+			throws IOException {
+		ArrayList<Antigen> trainSet = new ArrayList<Antigen>();
+		String fileName = "heartTraining.txt";
+		Scanner scanner = new Scanner(Paths.get(fileName));
+		while (scanner.hasNext()) {
+			String str = scanner.nextLine();
+			if (str.length() != 0) {
+				String[] temp = str.split("\\s+");
+				double X[] = new double[6];
+				for (int k = 0; k < 6; k++)
+					X[k] = new Double(temp[k + 1]);
+				int D[] = new int[6];
+				for (int k = 0; k < 6; k++)
+					D[k] = (int) (1000 * X[k]);
+				trainSet.add(new Antigen((new Integer(temp[0]) - 1), D, 6));
+			}
+		}
+		ArrayList<Antigen> testSet = new ArrayList<Antigen>();
+		fileName = "heartTest.txt";
+		scanner = new Scanner(Paths.get(fileName));
+		while (scanner.hasNext()) {
+			String str = scanner.nextLine();
+			if (str.length() != 0) {
+				String[] temp = str.split("\\s+");
+				double X[] = new double[6];
+				for (int k = 0; k < 6; k++)
+					X[k] = new Double(temp[k + 1]);
+				int D[] = new int[6];
+				for (int k = 0; k < 6; k++)
+					D[k] = (int) (1000 * X[k]);
+				testSet.add(new Antigen((new Integer(temp[0]) - 1), D, 6));
+			}
+		}
+
+		ArrayList<ArrayList<Antigen>> ans = new ArrayList<ArrayList<Antigen>>();
+		
+		ans.add(trainSet);
+		ans.add(testSet);
+		return ans;
+
+	}
+	public static double runHeart() throws IOException{
+		ArrayList<ArrayList<Antigen>> heartData = prepareHeart();
+		Object[] temp;
+		temp = new Object[] { 50, 20, 6, 7, 6, 0.02, 6, 1.0, 3, 5};
+		ArrayList<Antibody>[] Ab = (ArrayList<Antibody>[]) new ArrayList[4];
+		for(int i = 0; i < 4; i++){
+			Ab[i] = new ArrayList<Antibody>();
+		}
+		int sum1, sum2, sum3, sum4, sum5, sum6;
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 0; i < 80; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[0].add(new Antibody(6, new int[] {sum1/80, sum2/80,sum3/80,sum4/80,sum5/80,sum6/80}));
+	
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 80; i < 160; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[0].add(new Antibody(6, new int[] {sum1/80, sum2/80,sum3/80,sum4/80,sum5/80,sum6/80}));
+		
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 160; i < 186; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[1].add(new Antibody(6, new int[] {sum1/26, sum2/26,sum3/26,sum4/26,sum5/26,sum6/26}));
+		
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 186; i < 212; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[1].add(new Antibody(6, new int[] {sum1/26, sum2/26,sum3/26,sum4/26,sum5/26,sum6/26}));
+		
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 212; i < 230; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[2].add(new Antibody(6, new int[] {sum1/18, sum2/18,sum3/18,sum4/18,sum5/18,sum6/18}));
+	
+		sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = 0;
+		for(int i = 230; i < 248; i++){
+			sum1 += heartData.get(0).get(i).returnComponent(0);
+			sum2 += heartData.get(0).get(i).returnComponent(1);
+			sum3 += heartData.get(0).get(i).returnComponent(2);
+			sum4 += heartData.get(0).get(i).returnComponent(3);
+			sum5 += heartData.get(0).get(i).returnComponent(4);
+			sum6 += heartData.get(0).get(i).returnComponent(5);
+		}
+		Ab[2].add(new Antibody(6, new int[] {sum1/18, sum2/18,sum3/18,sum4/18,sum5/18,sum6/18}));
+	
+		for(int i = 0; i < 14; i++){
+			Ab[3].add(new Antibody(6, new int[]{
+					new Random().nextInt(3000),
+					new Random().nextInt(3000), 
+					new Random().nextInt(3000),
+					new Random().nextInt(3000),
+					new Random().nextInt(3000),
+					new Random().nextInt(3000),
+					}));
+		}
+		Antigen[] passData = new Antigen[heartData.get(0).size()];
+		for(int i = 0; i < heartData.get(0).size(); i++){
+			passData[i] = heartData.get(0).get(i);
+		}
+		Trainer x = new Trainer(Ab,passData, temp);
+		ArrayList<Antibody>[] trainedAb = (ArrayList<Antibody>[]) new ArrayList[3];
+		trainedAb =  x.train();
+		int[][] S = new int[3][3];
+		for(int i = 0; i < heartData.get(1).size(); i++){
+			Antigen focus = heartData.get(1).get(i);
+			Pair[] var = new Pair[6];
+			var[0] = new Pair(focus.affinity(trainedAb[0].get(0)) , 0);
+			var[1] = new Pair(focus.affinity(trainedAb[0].get(1)) , 0);
+			var[2] = new Pair(focus.affinity(trainedAb[1].get(0)) , 1);
+			var[3] = new Pair(focus.affinity(trainedAb[1].get(1)) , 1);
+			var[4] = new Pair(focus.affinity(trainedAb[2].get(0)) , 2);
+			var[5] = new Pair(focus.affinity(trainedAb[2].get(1)) , 2);
+			Arrays.sort(var, new Comp2());
+			S[focus.getLabel()][var[0].index] += 1;
+		}
+		for(int i = 0; i < 3; i++){
+			System.out.println(S[i][0] + " " + S[i][1] + " " + S[i][2]);
+		}
+		return (((S[0][0] + S[1][1] + S[2][2]) / (double)(S[2][0] + S[2][1] + S[2][2] + S[0][2] + S[1][2]+ S[0][0] + S[1][1] + S[0][1] + S[1][0])) * 100.0);
+		
+	}
 	
 	public static void main(String[] args) throws IOException{
 		double sum = 0;
+		for(int i = 0; i < 10; i++){
+		double temp = runHeart();
+		sum += temp;
+		System.out.println(temp);
+	}
+		System.out.println("heart Avg is " + sum/10);
 //		for(int i = 0; i < 10; i++){
 //			double temp = runiris();
 //			sum += temp;
@@ -1045,13 +1204,13 @@ public class Trainer {
 //		}
 //		System.out.println("Breast Avg is " + sum/10);
 		
-		sum = 0;
-		for(int i = 0; i < 100; i++){
-			double temp = runEcoli();
-			sum += temp;
-			System.out.println(temp);
-		}
-		System.out.println("Ecoli Avg is " + sum/100);
+//		sum = 0;
+//		for(int i = 0; i < 10; i++){
+//			double temp = runEcoli();
+//			sum += temp;
+//			System.out.println(temp);
+//		}
+//		System.out.println("Ecoli Avg is " + sum/10);
 			
 	}
 
